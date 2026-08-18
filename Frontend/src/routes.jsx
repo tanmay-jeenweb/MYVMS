@@ -6,7 +6,7 @@ import PendingApproval from "./pages/PendingApproval";
 
 import UserHome from "./pages/user/UserHome";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import UserGroupMaster from "./pages/admin/user/UserGroupMaster";
+import UserGroupModules from "./pages/admin/user/UserGroupModules";
 import CreateUser from "./pages/admin/user/CreateUser";
 import CreateUserType from "./pages/admin/user/CreateUserType";
 import ActivityReport from "./pages/admin/ActivityReport";
@@ -49,7 +49,7 @@ export default function AppRoutes() {
                 </Route>
             </Route>
 
-            <Route element={<ProtectedRoute allowedRole="admin" requiredMasters={["user_master", "device_approval"]} requiredAction="read" />}>
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModules={["user_master", "device_approval"]} requiredAction="read" />}>
                 <Route element={<MainLayout />}>
                     <Route
                         path="/admin/dashboard"
@@ -58,7 +58,7 @@ export default function AppRoutes() {
                 </Route>
             </Route>
 
-            <Route element={<ProtectedRoute allowedRole="admin" requiredMaster="activity_report" requiredAction="read" />}>
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="activity_report" requiredAction="read" />}>
                 <Route element={<MainLayout />}>
                     <Route
                         path="/admin/report"
@@ -67,7 +67,7 @@ export default function AppRoutes() {
                 </Route>
             </Route>
 
-            <Route element={<ProtectedRoute allowedRole="admin" requiredMaster="user_master" requiredAction="write" />}>
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="user_master" requiredAction="write" />}>
                 <Route element={<MainLayout />}>
                     <Route
                         path="/admin/users/create"
@@ -76,16 +76,16 @@ export default function AppRoutes() {
                 </Route>
             </Route>
 
-            <Route element={<ProtectedRoute allowedRole="admin" requiredMaster="user_type" requiredAction="read" />}>
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="user_type" requiredAction="read" />}>
                 <Route element={<MainLayout />}>
                     <Route
                         path="/admin/user-types"
-                        element={<UserGroupMaster />}
+                        element={<UserGroupModules />}
                     />
                 </Route>
             </Route>
 
-            <Route element={<ProtectedRoute allowedRole="admin" requiredMaster="user_type" requiredAction="write" />}>
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="user_type" requiredAction="write" />}>
                 <Route element={<MainLayout />}>
                     <Route
                         path="/admin/user-types/create"

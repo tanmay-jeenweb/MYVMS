@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createUserByAdmin } from "../../../api/authApi";
-import { getUserTypes } from "../../../api/userTypeMasterApi";
+import { getUserTypes } from "../../../api/userTypeModulesApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 

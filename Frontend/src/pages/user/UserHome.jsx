@@ -63,7 +63,7 @@ export default function UserHome() {
                         </div>
                     </div>
 
-                    {/* User Master Card */}
+                    {/* User Modules Card */}
                     {canManageUsers && (
                         <div 
                             onClick={() => navigate("/admin/dashboard")}
@@ -75,7 +75,7 @@ export default function UserHome() {
                                     <i className="fa-solid fa-users-gear text-emerald-600 text-lg"></i>
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-emerald-700 transition-colors">
-                                    User Master
+                                    User Modules
                                 </h3>
                                 <p className="text-slate-500 text-xs leading-relaxed">
                                     Manage member accounts, toggle active/inactive status, approve new logins, and authorize devices.
@@ -84,7 +84,7 @@ export default function UserHome() {
                             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
                                 <span>Manage Users</span>
                                 <span className="text-emerald-600 font-bold group-hover:translate-x-1.5 transition-transform flex items-center gap-1">
-                                    Open Master
+                                    Open Module
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                     </svg>
@@ -93,7 +93,7 @@ export default function UserHome() {
                         </div>
                     )}
 
-                    {/* User Type Master Card */}
+                    {/* User Type Modules Card */}
                     {canManageRoles && (
                         <div 
                             onClick={() => navigate("/admin/user-types")}
@@ -105,7 +105,7 @@ export default function UserHome() {
                                     <i className="fa-solid fa-user-shield text-violet-600 text-lg"></i>
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-violet-700 transition-colors">
-                                    User Types Master
+                                    User Types Modules
                                 </h3>
                                 <p className="text-slate-500 text-xs leading-relaxed">
                                     Define administrative and worker groups, and customize read/write access permissions.
@@ -114,7 +114,7 @@ export default function UserHome() {
                             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
                                 <span>Manage User Groups</span>
                                 <span className="text-violet-600 font-bold group-hover:translate-x-1.5 transition-transform flex items-center gap-1">
-                                    Open Master
+                                    Open Module
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                     </svg>

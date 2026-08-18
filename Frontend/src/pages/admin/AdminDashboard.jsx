@@ -396,8 +396,8 @@ export default function AdminDashboard() {
                 {activeTab === 'users' && canReadUsers && (
                     <div className="flex-1 flex flex-col mb-8">
                         <DataTable
-                            tableId="admin_user_master"
-                            title="User Master"
+                            tableId="admin_user_modules"
+                            title="User Modules"
                             data={users}
                             columns={userColumns}
                             searchPlaceholder="Search users by name or email..."

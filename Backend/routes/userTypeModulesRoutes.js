@@ -4,7 +4,7 @@ const {
     getAllUserTypesController,
     updateUserTypeController,
     deleteUserTypeController
-} = require('../controllers/userTypeMasterController.js');
+} = require('../controllers/userTypeModulesController.js');
 const { verifyToken, verifyPermission } = require('../middleware/authMiddleware.js');
 
 const router = express.Router();

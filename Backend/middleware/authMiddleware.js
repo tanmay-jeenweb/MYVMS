@@ -52,7 +52,7 @@ const verifyAdmin = (req, res, next) => {
     next();
 };
 
-const verifyPermission = (masterName, action) => {
+const verifyPermission = (moduleName, action) => {
     return async (req, res, next) => {
         try {
             if (!req.user) {
@@ -78,7 +78,7 @@ const verifyPermission = (masterName, action) => {
             if (userRows.length === 0 || userRows[0].user_type_id === null) {
                 return res.status(403).json({
                     success: false,
-                    message: `Access Denied. You do not have permission for ${masterName} (${action}).`
+                    message: `Access Denied. You do not have permission for ${moduleName} (${action}).`
                 });
             }
 
@@ -102,7 +102,7 @@ const verifyPermission = (masterName, action) => {
                 FROM user_type_permissions 
                 WHERE user_type_id = ? AND master_name = ?
             `;
-            const [permRows] = await db.execute(query, [userTypeId, masterName]);
+            const [permRows] = await db.execute(query, [userTypeId, moduleName]);
 
             if (permRows.length > 0 && permRows[0].permitted === 1) {
                 return next();
@@ -110,7 +110,7 @@ const verifyPermission = (masterName, action) => {
 
             return res.status(403).json({
                 success: false,
-                message: `Access Denied. Insufficient permissions for ${masterName} (${action}).`
+                message: `Access Denied. Insufficient permissions for ${moduleName} (${action}).`
             });
 
         } catch (error) {

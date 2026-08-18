@@ -10,7 +10,7 @@ const { connectDB } = require("./config/db.js");
 // Routes
 const authRoutes = require("./routes/authRoutes.js");
 const adminRoutes = require("./routes/adminRoutes.js");
-const userTypeMasterRoutes = require("./routes/userTypeMasterRoutes.js");
+const userTypeModulesRoutes = require("./routes/userTypeModulesRoutes.js");
 
 // Model Initializations
 const { initUserModel } = require("./models/userModel.js");
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 
 app.use(["/api/auth", "/auth"], authRoutes);
 app.use(["/api/admin", "/admin"], adminRoutes);
-app.use(["/api/usertypes", "/usertypes"], userTypeMasterRoutes);
+app.use(["/api/usertypes", "/usertypes"], userTypeModulesRoutes);
 
 
 // Global 404 handler

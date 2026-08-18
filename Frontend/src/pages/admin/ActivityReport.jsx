@@ -183,7 +183,7 @@ export default function ActivityReport() {
     },
     {
       key: "master_name",
-      label: "Module / Master",
+      label: "Module",
       render: (row) => <span className="text-slate-700">{row.master_name}</span>
     },
     {

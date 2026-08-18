@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { createUserType } from "../../../api/userTypeMasterApi";
+import { createUserType } from "../../../api/userTypeModulesApi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const PERMISSION_SECTIONS = [
   {
     title: "User Management",
-    masters: [
-      { key: "user_type",             label: "User Type Master" },
-      { key: "user_master",             label: "User Master" },
+    modules: [
+      { key: "user_type",             label: "User Type Modules" },
+      { key: "user_master",             label: "User Modules" },
       { key: "device_approval",         label: "Device Approval" },
       { key: "activity_report",         label: "Activity Report" },
     ]
   }
 ];
 
-const MASTERS = PERMISSION_SECTIONS.flatMap(s => s.masters);
+const MODULES = PERMISSION_SECTIONS.flatMap(s => s.modules);
 
 const PERMS = ["canRead", "canWrite", "canUpdate", "canDelete"];
 const PERM_LABELS = { canRead: "Read", canWrite: "Write / Approval", canUpdate: "Update", canDelete: "Delete" };
@@ -27,8 +27,8 @@ const PERM_COLORS = {
 };
 
 const defaultPerms = () =>
-  MASTERS.map((m) => ({
-    masterName: m.key,
+  MODULES.map((m) => ({
+    moduleName: m.key,
     canRead: false,
     canWrite: false,
     canUpdate: false,
@@ -44,23 +44,23 @@ export default function CreateUserType() {
   const navigate = useNavigate();
 
   // Toggle a single checkbox
-  const togglePerm = (masterKey, perm) => {
+  const togglePerm = (moduleKey, perm) => {
     setPermissions((prev) =>
       prev.map((p) =>
-        p.masterName === masterKey ? { ...p, [perm]: !p[perm] } : p
+        p.moduleName === moduleKey ? { ...p, [perm]: !p[perm] } : p
       )
     );
   };
 
-  // Toggle entire row (all perms for one master)
-  const toggleRow = (masterKey) => {
-    const isApprovalRow = masterKey.endsWith("_approval");
-    const row = permissions.find((p) => p.masterName === masterKey);
+  // Toggle entire row (all perms for one module)
+  const toggleRow = (moduleKey) => {
+    const isApprovalRow = moduleKey.endsWith("_approval");
+    const row = permissions.find((p) => p.moduleName === moduleKey);
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     const allChecked = applicablePerms.every((perm) => row[perm]);
     setPermissions((prev) =>
       prev.map((p) =>
-        p.masterName === masterKey
+        p.moduleName === moduleKey
           ? {
               ...p,
               canRead: !allChecked,
@@ -73,11 +73,11 @@ export default function CreateUserType() {
     );
   };
 
-  // Toggle entire column (one perm across all masters)
+  // Toggle entire column (one perm across all modules)
   const toggleColumn = (perm) => {
     const allChecked = permissions.every((p) => p[perm]);
     setPermissions((prev) => prev.map((p) => {
-      const isApprovalRow = p.masterName.endsWith("_approval");
+      const isApprovalRow = p.moduleName.endsWith("_approval");
       if (isApprovalRow && (perm === "canUpdate" || perm === "canDelete")) {
         return { ...p, [perm]: false };
       }
@@ -88,13 +88,13 @@ export default function CreateUserType() {
   // Select / deselect all
   const toggleAll = () => {
     const allChecked = permissions.every((p) => {
-      const isApprovalRow = p.masterName.endsWith("_approval");
+      const isApprovalRow = p.moduleName.endsWith("_approval");
       const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
       return applicablePerms.every((perm) => p[perm]);
     });
     setPermissions((prev) =>
       prev.map((p) => {
-        const isApprovalRow = p.masterName.endsWith("_approval");
+        const isApprovalRow = p.moduleName.endsWith("_approval");
         return {
           ...p,
           canRead: !allChecked,
@@ -106,15 +106,15 @@ export default function CreateUserType() {
     );
   };
 
-  const isRowAll = (masterKey) => {
-    const isApprovalRow = masterKey.endsWith("_approval");
-    const row = permissions.find((p) => p.masterName === masterKey);
+  const isRowAll = (moduleKey) => {
+    const isApprovalRow = moduleKey.endsWith("_approval");
+    const row = permissions.find((p) => p.moduleName === moduleKey);
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     return applicablePerms.every((perm) => row[perm]);
   };
 
   const isColAll = (perm) => permissions.every((p) => {
-    const isApprovalRow = p.masterName.endsWith("_approval");
+    const isApprovalRow = p.moduleName.endsWith("_approval");
     if (isApprovalRow && (perm === "canUpdate" || perm === "canDelete")) {
       return true; // treat as matched so it doesn't block "all"
     }
@@ -122,7 +122,7 @@ export default function CreateUserType() {
   });
   
   const isAllAll = () => permissions.every((p) => {
-    const isApprovalRow = p.masterName.endsWith("_approval");
+    const isApprovalRow = p.moduleName.endsWith("_approval");
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     return applicablePerms.every((perm) => p[perm]);
   });
@@ -210,7 +210,7 @@ export default function CreateUserType() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
               <div>
                 <h2 style={{ fontSize: 15, fontWeight: 700, color: "#1e293b", margin: 0 }}>Module Permissions</h2>
-                <p style={{ fontSize: 13, color: "#94a3b8", margin: "4px 0 0" }}>Set read, write, update and delete access per master module.</p>
+                <p style={{ fontSize: 13, color: "#94a3b8", margin: "4px 0 0" }}>Set read, write, update and delete access per module.</p>
               </div>
               <button
                 type="button"
@@ -230,7 +230,7 @@ export default function CreateUserType() {
                 <thead>
                   <tr style={{ background: "#f8fafc" }}>
                     <th style={{ textAlign: "left", padding: "10px 14px", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #e2e8f0", minWidth: 160 }}>
-                      Master Module
+                      Module
                     </th>
                     {PERMS.map((perm) => {
                       const c = PERM_COLORS[perm];
@@ -281,12 +281,12 @@ export default function CreateUserType() {
                           {section.title}
                         </td>
                       </tr>
-                      {section.masters.map((master, idx) => {
-                        const row = permissions.find((p) => p.masterName === master.key);
-                        const rowAll = isRowAll(master.key);
+                      {section.modules.map((moduleItem, idx) => {
+                        const row = permissions.find((p) => p.moduleName === moduleItem.key);
+                        const rowAll = isRowAll(moduleItem.key);
                         return (
                           <tr
-                            key={master.key}
+                            key={moduleItem.key}
                             style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa", transition: "background 0.15s" }}
                             onMouseEnter={e => e.currentTarget.style.background = "#f1f5f9"}
                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 0 ? "#fff" : "#fafafa"}
@@ -294,14 +294,14 @@ export default function CreateUserType() {
                             <td style={{ padding: "12px 14px", fontSize: 14, fontWeight: 600, color: "#334155", borderBottom: "1px solid #f1f5f9" }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#1e3a8a", flexShrink: 0 }} />
-                                {master.label}
+                                {moduleItem.label}
                               </div>
                             </td>
                             {PERMS.map((perm) => {
                               const c = PERM_COLORS[perm];
                               const checked = row[perm];
-                              const isApprovalRow = master.key.endsWith("_approval");
-                              const isReportRow = master.key === "activity_report" || master.key === "closed_inquiry_report";
+                              const isApprovalRow = moduleItem.key.endsWith("_approval");
+                              const isReportRow = moduleItem.key === "activity_report" || moduleItem.key === "closed_inquiry_report";
                               if (
                                 (isApprovalRow && (perm === "canUpdate" || perm === "canDelete")) ||
                                 (isReportRow && (perm === "canWrite" || perm === "canUpdate" || perm === "canDelete"))
@@ -316,7 +316,7 @@ export default function CreateUserType() {
                               return (
                                 <td key={perm} style={{ textAlign: "center", padding: "12px 8px", borderBottom: "1px solid #f1f5f9" }}>
                                   <div
-                                    onClick={() => togglePerm(master.key, perm)}
+                                    onClick={() => togglePerm(moduleItem.key, perm)}
                                     style={{
                                       width: 22, height: 22, borderRadius: 6,
                                       border: `2px solid ${checked ? c.check : "#cbd5e1"}`,
@@ -340,7 +340,7 @@ export default function CreateUserType() {
                             <td style={{ textAlign: "center", padding: "12px 8px", borderBottom: "1px solid #f1f5f9" }}>
                               <button
                                 type="button"
-                                onClick={() => toggleRow(master.key)}
+                                onClick={() => toggleRow(moduleItem.key)}
                                 style={{
                                   fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6, cursor: "pointer",
                                   border: `1.5px solid ${rowAll ? "#1e3a8a" : "#cbd5e1"}`,

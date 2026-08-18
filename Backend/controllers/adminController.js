@@ -81,7 +81,7 @@ const createUserByAdmin = async (req, res) => {
             req.user?.id,
             req.user?.name || req.user?.username || 'Unknown',
             adminDeviceId,
-            'User Master',
+            'User Modules',
             'created',
             null,
             {
@@ -252,7 +252,7 @@ const toggleUserActiveController = async (req, res) => {
             adminId,
             req.user?.name || req.user?.username || 'Unknown',
             adminDeviceId,
-            'User Master',
+            'User Modules',
             active ? 'activated' : 'deactivated',
             { name: beforeData.name, username: beforeData.username, active: beforeData.active },
             { name: beforeData.name, username: beforeData.username, active: active }

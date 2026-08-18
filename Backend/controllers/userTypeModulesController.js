@@ -22,7 +22,7 @@ const addUserType = async (req, res) => {
             addedBy,
             req.user?.name || req.user?.username || 'Unknown',
             deviceId,
-            'User Type Master',
+            'User Type Modules',
             'created',
             null,
             {
@@ -86,7 +86,7 @@ const updateUserTypeController = async (req, res) => {
             req.user?.id,
             req.user?.name || req.user?.username || 'Unknown',
             deviceId,
-            'User Type Master',
+            'User Type Modules',
             'updated',
             beforeData,
             {
@@ -117,7 +117,7 @@ const deleteUserTypeController = async (req, res) => {
             req.user?.id,
             req.user?.name || req.user?.username || 'Unknown',
             deviceId,
-            'User Type Master',
+            'User Type Modules',
             'deleted',
             beforeData,
             null

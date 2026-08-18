@@ -1,5 +1,5 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logoutUser } from "../api/authApi";
 import { usePermission } from "../context/PermissionContext";
 
@@ -9,6 +9,16 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const { hasPermission } = usePermission();
     const isAdmin = user.role === "admin" || user.role === "super admin";
+
+    const [isModulesOpen, setIsModulesOpen] = useState(() => {
+        return ["/admin/dashboard", "/admin/user-types"].includes(location.pathname);
+    });
+
+    useEffect(() => {
+        if (["/admin/dashboard", "/admin/user-types"].includes(location.pathname)) {
+            setIsModulesOpen(true);
+        }
+    }, [location.pathname]);
 
     const handleLogout = async () => {
         try {
@@ -23,27 +33,27 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
         navigate("/");
     };
 
-    const allMasters = [
+    const allModules = [
         {
-            name: "User Master",
+            name: "User Modules",
             path: "/admin/dashboard",
-            masterKeys: ["user_master", "device_approval"],
+            moduleKeys: ["user_master", "device_approval"],
             icon: "fa-solid fa-users-gear",
             desc: "Manage user profiles & accounts"
         },
         {
-            name: "User Types Master",
+            name: "User Types Modules",
             path: "/admin/user-types",
-            masterKey: "user_type",
+            moduleKey: "user_type",
             icon: "fa-solid fa-user-shield",
             desc: "Configure access roles"
         }
     ];
 
-    const availableMasters = allMasters.filter(m => {
+    const availableModules = allModules.filter(m => {
         if (m.adminOnly) return isAdmin;
-        if (m.masterKey) return hasPermission(m.masterKey, "read");
-        if (m.masterKeys) return m.masterKeys.some(key => hasPermission(key, "read"));
+        if (m.moduleKey) return hasPermission(m.moduleKey, "read");
+        if (m.moduleKeys) return m.moduleKeys.some(key => hasPermission(key, "read"));
         return true;
     });
 
@@ -111,78 +121,88 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-                    {/* Main Section */}
-                    <div>
-                        {isCollapsed ? (
-                            <div className="border-t border-slate-800/80 my-3" />
-                        ) : (
-                            <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Main</p>
-                        )}
-                        <Link
-                            to="/user/home"
-                            onClick={onClose}
-                            className={`flex items-center transition-all duration-200 ${
-                                isActive("/user/home") 
-                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
-                                    : "hover:bg-slate-800 hover:text-white"
-                            } ${isCollapsed ? "justify-center w-10 h-10 rounded-xl mx-auto" : "gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold"}`}
-                            title={isCollapsed ? "User Dashboard" : ""}
-                        >
-                            <i className="fa-solid fa-house text-base"></i>
-                            {!isCollapsed && <span>User Dashboard</span>}
-                        </Link>
-                    </div>
+                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                    {/* Dashboard */}
+                    <Link
+                        to="/user/home"
+                        onClick={onClose}
+                        className={`flex items-center transition-all duration-200 ${
+                            isActive("/user/home") 
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
+                                : "hover:bg-slate-800 hover:text-white text-slate-300"
+                        } ${isCollapsed ? "justify-center w-10 h-10 rounded-xl mx-auto" : "gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold"}`}
+                        title={isCollapsed ? "Dashboard" : ""}
+                    >
+                        <i className="fa-solid fa-house text-base"></i>
+                        {!isCollapsed && <span>Dashboard</span>}
+                    </Link>
 
-                    {/* Administration & Masters */}
-                    {availableMasters.length > 0 && (
+                    {/* Modules Dropdown */}
+                    {availableModules.length > 0 && (
                         <div>
                             {isCollapsed ? (
-                                <div className="border-t border-slate-800/80 my-3" />
+                                <div className="border-t border-slate-800/80 my-2" />
                             ) : (
-                                <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Masters</p>
-                            )}
-                            <div className="space-y-2">
-                                {availableMasters.map((m, idx) => (
-                                    <Link
-                                        key={idx}
-                                        to={m.path}
-                                        onClick={onClose}
-                                        className={`flex items-center transition-all duration-200 ${
-                                            isActive(m.path)
-                                                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                                : "hover:bg-slate-800 hover:text-white"
-                                        } ${isCollapsed ? "justify-center w-10 h-10 rounded-xl mx-auto" : "gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold"}`}
-                                        title={isCollapsed ? m.name : ""}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModulesOpen(!isModulesOpen)}
+                                    className={`w-full flex items-center justify-between transition-all duration-200 hover:bg-slate-800 hover:text-white gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 bg-transparent border-none cursor-pointer focus:outline-none`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <i className="fa-solid fa-cubes text-base"></i>
+                                        <span>Modules</span>
+                                    </div>
+                                    <svg
+                                        className={`w-3.5 h-3.5 transform transition-transform duration-200 ${
+                                            isModulesOpen ? "rotate-90" : ""
+                                        }`}
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
                                     >
-                                        <i className={`${m.icon} text-base`}></i>
-                                        {!isCollapsed && <span>{m.name}</span>}
-                                    </Link>
-                                ))}
-                            </div>
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            )}
+                            {(!isCollapsed ? isModulesOpen : true) && (
+                                <div className={`space-y-1.5 ${!isCollapsed ? "ml-3.5 border-l border-slate-800/80 pl-3.5 mt-1" : ""}`}>
+                                    {availableModules.map((m, idx) => (
+                                        <Link
+                                            key={idx}
+                                            to={m.path}
+                                            onClick={onClose}
+                                            className={`flex items-center transition-all duration-200 ${
+                                                isActive(m.path)
+                                                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                                                    : "hover:bg-slate-800 hover:text-white text-slate-300"
+                                            } ${isCollapsed ? "justify-center w-10 h-10 rounded-xl mx-auto" : "gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold"}`}
+                                            title={isCollapsed ? m.name : ""}
+                                        >
+                                            <i className={`${m.icon} text-base`}></i>
+                                            {!isCollapsed && <span>{m.name}</span>}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* Reports Section */}
                     {hasActivityReport && (
                         <div>
-                            {isCollapsed ? (
-                                <div className="border-t border-slate-800/80 my-3" />
-                            ) : (
-                                <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Reports</p>
-                            )}
+                            {isCollapsed && <div className="border-t border-slate-800/80 my-2" />}
                             <Link
                                 to="/admin/report"
                                 onClick={onClose}
                                 className={`flex items-center transition-all duration-200 ${
                                     isActive("/admin/report")
                                         ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                        : "hover:bg-slate-800 hover:text-white"
+                                        : "hover:bg-slate-800 hover:text-white text-slate-300"
                                 } ${isCollapsed ? "justify-center w-10 h-10 rounded-xl mx-auto" : "gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold"}`}
-                                title={isCollapsed ? "Activity Report" : ""}
+                                title={isCollapsed ? "Reports" : ""}
                             >
                                 <i className="fa-solid fa-chart-line text-base"></i>
-                                {!isCollapsed && <span>Activity Report</span>}
+                                {!isCollapsed && <span>Reports</span>}
                             </Link>
                         </div>
                     )}

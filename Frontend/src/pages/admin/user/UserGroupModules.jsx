@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { getUserTypes, updateUserType, deleteUserType } from "../../../api/userTypeMasterApi";
+import { getUserTypes, updateUserType, deleteUserType } from "../../../api/userTypeModulesApi";
 import DataTable from "../../../components/DataTable";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -9,16 +9,16 @@ import { usePermission } from "../../../context/PermissionContext";
 const PERMISSION_SECTIONS = [
   {
     title: "User Management",
-    masters: [
-      { key: "user_type", label: "User Type Master" },
-      { key: "user_master", label: "User Master" },
+    modules: [
+      { key: "user_type", label: "User Type Modules" },
+      { key: "user_master", label: "User Modules" },
       { key: "device_approval", label: "Device Approval" },
       { key: "activity_report", label: "Activity Report" },
     ]
   }
 ];
 
-const MASTERS = PERMISSION_SECTIONS.flatMap(s => s.masters);
+const MODULES = PERMISSION_SECTIONS.flatMap(s => s.modules);
 const PERMS = ["canRead", "canWrite", "canUpdate", "canDelete"];
 const PERM_LABELS = { canRead: "Read", canWrite: "Write / Approval", canUpdate: "Update", canDelete: "Delete" };
 const PERM_COLORS = {
@@ -29,23 +29,23 @@ const PERM_COLORS = {
 };
 
 const defaultPerms = () =>
-  MASTERS.map((m) => ({ masterName: m.key, canRead: false, canWrite: false, canUpdate: false, canDelete: false }));
+  MODULES.map((m) => ({ moduleName: m.key, canRead: false, canWrite: false, canUpdate: false, canDelete: false }));
 
 const buildPermsFromApi = (apiPerms) => {
   if (!apiPerms || apiPerms.length === 0) return defaultPerms();
-  return MASTERS.map((m) => {
-    const found = apiPerms.find((p) => p.masterName === m.key);
+  return MODULES.map((m) => {
+    const found = apiPerms.find((p) => p.moduleName === m.key);
     const isApprovalRow = m.key.endsWith("_approval");
     if (found) {
       return {
-        masterName: m.key,
+        moduleName: m.key,
         canRead: !!found.canRead,
         canWrite: !!found.canWrite,
         canUpdate: isApprovalRow ? false : !!found.canUpdate,
         canDelete: isApprovalRow ? false : !!found.canDelete
       };
     }
-    return { masterName: m.key, canRead: false, canWrite: false, canUpdate: false, canDelete: false };
+    return { moduleName: m.key, canRead: false, canWrite: false, canUpdate: false, canDelete: false };
   });
 };
 
@@ -78,9 +78,9 @@ function PermBadges({ permissions }) {
   if (!permissions || permissions.length === 0)
     return <span style={{ color: "#94a3b8", fontSize: 12 }}>No permissions set</span>;
 
-  // Only show masters that have at least one permission granted
-  const rows = MASTERS.map((m) => {
-    const p = permissions.find((x) => x.masterName === m.key);
+  // Only show modules that have at least one permission granted
+  const rows = MODULES.map((m) => {
+    const p = permissions.find((x) => x.moduleName === m.key);
     if (!p) return null;
     const isApprovalRow = m.key.endsWith("_approval");
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
@@ -129,15 +129,15 @@ function EditForm({ row, onClose, onSave, saving }) {
   const [typeName, setTypeName] = useState(row.type_name || "");
   const [permissions, setPermissions] = useState(buildPermsFromApi(row.permissions));
 
-  const togglePerm = (masterKey, perm) =>
-    setPermissions((prev) => prev.map((p) => p.masterName === masterKey ? { ...p, [perm]: !p[perm] } : p));
+  const togglePerm = (moduleKey, perm) =>
+    setPermissions((prev) => prev.map((p) => p.moduleName === moduleKey ? { ...p, [perm]: !p[perm] } : p));
 
-  const toggleRow = (masterKey) => {
-    const isApprovalRow = masterKey.endsWith("_approval");
-    const r = permissions.find((p) => p.masterName === masterKey);
+  const toggleRow = (moduleKey) => {
+    const isApprovalRow = moduleKey.endsWith("_approval");
+    const r = permissions.find((p) => p.moduleName === moduleKey);
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     const all = applicablePerms.every((perm) => r[perm]);
-    setPermissions((prev) => prev.map((p) => p.masterName === masterKey
+    setPermissions((prev) => prev.map((p) => p.moduleName === moduleKey
       ? {
           ...p,
           canRead: !all,
@@ -150,7 +150,7 @@ function EditForm({ row, onClose, onSave, saving }) {
   const toggleColumn = (perm) => {
     const all = permissions.every((p) => p[perm]);
     setPermissions((prev) => prev.map((p) => {
-      const isApprovalRow = p.masterName.endsWith("_approval");
+      const isApprovalRow = p.moduleName.endsWith("_approval");
       if (isApprovalRow && (perm === "canUpdate" || perm === "canDelete")) {
         return { ...p, [perm]: false };
       }
@@ -160,12 +160,12 @@ function EditForm({ row, onClose, onSave, saving }) {
 
   const toggleAll = () => {
     const all = permissions.every((p) => {
-      const isApprovalRow = p.masterName.endsWith("_approval");
+      const isApprovalRow = p.moduleName.endsWith("_approval");
       const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
       return applicablePerms.every((perm) => p[perm]);
     });
     setPermissions((prev) => prev.map((p) => {
-      const isApprovalRow = p.masterName.endsWith("_approval");
+      const isApprovalRow = p.moduleName.endsWith("_approval");
       return {
         ...p,
         canRead: !all,
@@ -176,15 +176,15 @@ function EditForm({ row, onClose, onSave, saving }) {
     }));
   };
 
-  const isRowAll = (masterKey) => {
-    const isApprovalRow = masterKey.endsWith("_approval");
-    const r = permissions.find((p) => p.masterName === masterKey);
+  const isRowAll = (moduleKey) => {
+    const isApprovalRow = moduleKey.endsWith("_approval");
+    const r = permissions.find((p) => p.moduleName === moduleKey);
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     return applicablePerms.every((perm) => r[perm]);
   };
 
   const isColAll = (perm) => permissions.every((p) => {
-    const isApprovalRow = p.masterName.endsWith("_approval");
+    const isApprovalRow = p.moduleName.endsWith("_approval");
     if (isApprovalRow && (perm === "canUpdate" || perm === "canDelete")) {
       return true;
     }
@@ -192,7 +192,7 @@ function EditForm({ row, onClose, onSave, saving }) {
   });
 
   const isAllAll = () => permissions.every((p) => {
-    const isApprovalRow = p.masterName.endsWith("_approval");
+    const isApprovalRow = p.moduleName.endsWith("_approval");
     const applicablePerms = isApprovalRow ? ["canRead", "canWrite"] : PERMS;
     return applicablePerms.every((perm) => p[perm]);
   });
@@ -241,7 +241,7 @@ function EditForm({ row, onClose, onSave, saving }) {
             <div className="flex items-center justify-between mb-[18px]">
               <div>
                 <h2 className="text-[15px] font-bold text-slate-800 m-0">Module Permissions</h2>
-                <p className="text-[13px] text-slate-400 mt-1 mb-0">Set read, write, update and delete access per master module.</p>
+                <p className="text-[13px] text-slate-400 mt-1 mb-0">Set read, write, update and delete access per module.</p>
               </div>
               <button
                 type="button"
@@ -257,7 +257,7 @@ function EditForm({ row, onClose, onSave, saving }) {
                 <thead>
                   <tr className="bg-slate-50">
                     <th className="text-left py-2.5 px-3.5 text-xs font-bold text-slate-500 uppercase tracking-[0.05em] border-b-2 border-slate-200 min-w-[160px]">
-                      Master Module
+                      Module
                     </th>
                     {PERMS.map((perm) => {
                       const c = PERM_COLORS[perm];
@@ -301,14 +301,14 @@ function EditForm({ row, onClose, onSave, saving }) {
                           {section.title}
                         </td>
                       </tr>
-                      {section.masters.map((master, idx) => {
-                        const rowData = permissions.find((p) => p.masterName === master.key);
-                        const rowAll = isRowAll(master.key);
-                        const isApprovalRow = master.key.endsWith("_approval");
-                        const isReportRow = master.key === "activity_report" || master.key === "closed_inquiry_report";
+                      {section.modules.map((moduleItem, idx) => {
+                        const rowData = permissions.find((p) => p.moduleName === moduleItem.key);
+                        const rowAll = isRowAll(moduleItem.key);
+                        const isApprovalRow = moduleItem.key.endsWith("_approval");
+                        const isReportRow = moduleItem.key === "activity_report" || moduleItem.key === "closed_inquiry_report";
                         return (
                           <tr
-                            key={master.key}
+                            key={moduleItem.key}
                             className="transition-colors duration-150 hover:bg-slate-100"
                             style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}
                             onMouseEnter={e => e.currentTarget.style.background = "#f1f5f9"}
@@ -317,7 +317,7 @@ function EditForm({ row, onClose, onSave, saving }) {
                             <td className="py-3 px-3.5 text-sm font-semibold text-slate-700 border-b border-slate-50">
                               <div className="flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-[#1e3a8a] shrink-0" />
-                                {master.label}
+                                {moduleItem.label}
                               </div>
                             </td>
                             {PERMS.map((perm) => {
@@ -328,15 +328,15 @@ function EditForm({ row, onClose, onSave, saving }) {
                                 (isReportRow && (perm === "canWrite" || perm === "canUpdate" || perm === "canDelete"))
                               ) {
                                 return (
-                                  <td key={perm} className="text-center py-3 px-2 border-b border-slate-50 text-slate-400">
+                                  <td key={perm} className="text-center py-2.5 px-2 border-b border-slate-50 text-slate-400">
                                     —
                                   </td>
                                 );
                               }
-                              return (
+                               return (
                                 <td key={perm} className="text-center py-3 px-2 border-b border-slate-50">
                                   <div
-                                    onClick={() => togglePerm(master.key, perm)}
+                                    onClick={() => togglePerm(moduleItem.key, perm)}
                                     className="w-[22px] h-[22px] rounded-[6px] flex items-center justify-center cursor-pointer transition-all duration-150 mx-auto border-2"
                                     style={{
                                       borderColor: checked ? c.check : "#cbd5e1",
@@ -356,7 +356,7 @@ function EditForm({ row, onClose, onSave, saving }) {
                             <td className="text-center py-3 px-2 border-b border-slate-50">
                               <button
                                 type="button"
-                                onClick={() => toggleRow(master.key)}
+                                onClick={() => toggleRow(moduleItem.key)}
                                  className={`text-[11px] font-semibold py-1 px-2.5 rounded-md cursor-pointer border-[1.5px] transition-all duration-150 ${rowAll ? "border-[#1e3a8a] bg-[#1e3a8a] text-white" : "border-slate-300 bg-slate-50 text-slate-500"}`}
                               >
                                 {rowAll ? "✓ All" : "All"}
@@ -552,8 +552,8 @@ export default function UserGroupMaster() {
           />
         ) : (
           <DataTable
-            tableId="user_group_master"
-            title="User Type Master"
+            tableId="user_group_modules"
+            title="User Type Modules"
             data={userTypes}
             columns={columns}
             loading={loading}

@@ -1,9 +1,9 @@
 const db = require('../config/db.js');
 
-// ─── Masters list (must match frontend) ─────────────────────────────────────
-const MASTERS = [
-    { key: 'user_type', label: 'User Type Master' },
-    { key: 'user_master', label: 'User Master' },
+// ─── Modules list (must match frontend) ─────────────────────────────────────
+const MODULES = [
+    { key: 'user_type', label: 'User Type Modules' },
+    { key: 'user_master', label: 'User Modules' },
     { key: 'device_approval', label: 'Device Approval' },
     { key: 'activity_report', label: 'Activity Report' },
 ];
@@ -60,7 +60,7 @@ const createUserTypePermissionsTable = async () => {
 // ─── Permissions helpers ─────────────────────────────────────────────────────
 
 /**
- * permissions = [{ masterName, canRead, canWrite, canUpdate, canDelete }, ...]
+ * permissions = [{ moduleName, canRead, canWrite, canUpdate, canDelete }, ...]
  */
 const upsertPermissions = async (userTypeId, permissions) => {
     if (!permissions || permissions.length === 0) return;
@@ -78,7 +78,7 @@ const upsertPermissions = async (userTypeId, permissions) => {
         `;
         await db.execute(query, [
             userTypeId,
-            p.masterName,
+            p.moduleName,
             p.canRead ? 1 : 0,
             p.canWrite ? 1 : 0,
             p.canUpdate ? 1 : 0,
@@ -122,7 +122,7 @@ const createUserType = async (typeName, addedBy, deviceId, permissions) => {
                         can_write  = VALUES(can_write),
                         can_update = VALUES(can_update),
                         can_delete = VALUES(can_delete)`,
-                    [newId, p.masterName, p.canRead ? 1 : 0, p.canWrite ? 1 : 0, p.canUpdate ? 1 : 0, p.canDelete ? 1 : 0]
+                    [newId, p.moduleName, p.canRead ? 1 : 0, p.canWrite ? 1 : 0, p.canUpdate ? 1 : 0, p.canDelete ? 1 : 0]
                 );
             }
         }
@@ -157,7 +157,7 @@ const getAllUserTypes = async () => {
     for (const row of results) {
         const perms = await getPermissionsByUserTypeId(row.id);
         row.permissions = perms.map(p => ({
-            masterName: p.master_name,
+            moduleName: p.master_name,
             canRead: !!p.can_read,
             canWrite: !!p.can_write,
             canUpdate: !!p.can_update,
@@ -189,7 +189,7 @@ const updateUserType = async (id, typeName, permissions) => {
                         can_write  = VALUES(can_write),
                         can_update = VALUES(can_update),
                         can_delete = VALUES(can_delete)`,
-                    [id, p.masterName, p.canRead ? 1 : 0, p.canWrite ? 1 : 0, p.canUpdate ? 1 : 0, p.canDelete ? 1 : 0]
+                    [id, p.moduleName, p.canRead ? 1 : 0, p.canWrite ? 1 : 0, p.canUpdate ? 1 : 0, p.canDelete ? 1 : 0]
                 );
             }
         }
@@ -220,7 +220,7 @@ const getUserTypeById = async (id) => {
     return {
         ...rows[0],
         permissions: permissions.map((p) => ({
-            masterName: p.master_name,
+            moduleName: p.master_name,
             canRead: !!p.can_read,
             canWrite: !!p.can_write,
             canUpdate: !!p.can_update,
@@ -230,7 +230,7 @@ const getUserTypeById = async (id) => {
 };
 
 module.exports = {
-    MASTERS,
+    MODULES,
     createUserTypesTable,
     createUserTypePermissionsTable,
     upsertPermissions,

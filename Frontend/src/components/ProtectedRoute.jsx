@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { usePermission } from "../context/PermissionContext";
 
-export default function ProtectedRoute({ allowedRole, allowedModule, requiredMaster, requiredMasters, requiredAction = "read" }) {
+export default function ProtectedRoute({ allowedRole, allowedModule, requiredModule, requiredModules, requiredAction = "read" }) {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "null");
     const { hasPermission, loading } = usePermission();
@@ -21,20 +21,20 @@ export default function ProtectedRoute({ allowedRole, allowedModule, requiredMas
         );
     }
 
-    // Role check (admin or specific master permission)
+    // Role check (admin or specific module permission)
     if (allowedRole && user.role !== allowedRole && !(allowedRole === "admin" && user.role === "super admin")) {
-        const isAllowedByMaster = (requiredMaster && hasPermission(requiredMaster, requiredAction)) ||
-                                  (requiredMasters && requiredMasters.some(m => hasPermission(m, requiredAction)));
-        if (!isAllowedByMaster) {
+        const isAllowedByModule = (requiredModule && hasPermission(requiredModule, requiredAction)) ||
+                                  (requiredModules && requiredModules.some(m => hasPermission(m, requiredAction)));
+        if (!isAllowedByModule) {
             return <Navigate to="/user/home" replace />;
         }
     }
 
-    // Master permission check
-    if (requiredMaster && !hasPermission(requiredMaster, requiredAction)) {
+    // Module permission check
+    if (requiredModule && !hasPermission(requiredModule, requiredAction)) {
         return <Navigate to="/user/home" replace />;
     }
-    if (requiredMasters && !requiredMasters.some(m => hasPermission(m, requiredAction))) {
+    if (requiredModules && !requiredModules.some(m => hasPermission(m, requiredAction))) {
         return <Navigate to="/user/home" replace />;
     }
 

@@ -61,13 +61,13 @@ export function PermissionProvider({ children }) {
         };
     }, []);
 
-    const hasPermission = (masterName, action) => {
+    const hasPermission = (moduleName, action) => {
         // Admins always have all permissions
         if (isAdmin) return true;
         const user = JSON.parse(localStorage.getItem("user") || "null");
         if (user && user.role === "admin") return true;
 
-        const perm = permissions[masterName];
+        const perm = permissions[moduleName];
         if (!perm) return false;
 
         return !!perm[action];

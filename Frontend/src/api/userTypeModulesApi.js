@@ -5,12 +5,12 @@ export const getUserTypes = async () => {
 };
 
 export const createUserType = async (data) => {
-    // data: { typeName, permissions: [{ masterName, canRead, canWrite, canUpdate, canDelete }] }
+    // data: { typeName, permissions: [{ moduleName, canRead, canWrite, canUpdate, canDelete }] }
     return apiClient.post("/usertypes/add", data);
 };
 
 export const updateUserType = async (id, data) => {
-    // data: { typeName, permissions: [{ masterName, canRead, canWrite, canUpdate, canDelete }] }
+    // data: { typeName, permissions: [{ moduleName, canRead, canWrite, canUpdate, canDelete }] }
     return apiClient.put(`/usertypes/update/${id}`, data);
 };
 
