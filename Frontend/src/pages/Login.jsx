@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { loginUser } from "../api/authApi";
 import { getDeviceId } from "../utils/device";
 import jwlogo from "../assets/jwLogo.jpeg";
+import heroImage from "../assets/ChatGPT Image Aug 18, 2026, 12_27_06 PM.png";
 
 
 export default function Login() {
@@ -52,77 +53,51 @@ export default function Login() {
     };
 
     return (
-        <div className="h-screen w-screen flex flex-col md:flex-row bg-gradient-to-br from-[#06152d] via-slate-950 to-[#0b1b36] font-sans antialiased text-slate-200 overflow-hidden relative">
-            
-            {/* Ambient Glows */}
-            {/* Left side glow */}
-            <div className="absolute top-[45%] left-[25%] -translate-x-1/2 -translate-y-1/2 w-[40%] h-[60%] bg-blue-600/15 rounded-full blur-[130px] pointer-events-none z-0" />
-            {/* Right side glows */}
-            <div className="absolute top-[25%] left-[75%] -translate-x-1/2 -translate-y-1/2 w-[40%] h-[50%] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
-            <div className="absolute bottom-[25%] left-[65%] -translate-x-1/2 -translate-y-1/2 w-[35%] h-[45%] bg-sky-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
+        <div className="h-screen w-screen flex flex-col md:flex-row bg-[#f8fafc] font-sans antialiased overflow-hidden relative">
 
-            {/* Left Column: MYVMS Dashboard Mockup */}
-            <div className="hidden md:flex md:w-1/2 h-full relative overflow-hidden select-none bg-transparent flex-col justify-center items-center p-8 z-10">
-                
-                {/* Server Icon illustration */}
-                <div className="w-full flex justify-center items-center max-h-[60%] z-10 relative -top-12">
-                    <img
-                        src="/myvms_server_icon.png"
-                        alt="MYVMS Server Infrastructure"
-                        className="w-[75%] h-auto object-contain transition-transform duration-[6000ms] hover:scale-103 ease-out drop-shadow-[0_15px_40px_rgba(0,86,207,0.25)] rounded-2xl"
-                    />
-                </div>
-                
-                {/* Floating Brand Text */}
-                <div className="absolute bottom-6 left-12 z-20 max-w-md">
-                    <h1 className="text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight">
-                        Billing & Provisioning,<br />
-                        <span className="bg-gradient-to-r from-blue-400 via-sky-400 to-teal-400 bg-clip-text text-transparent">
-                            Fully Automated.
-                        </span>
-                    </h1>
-                    <p className="mt-3 text-slate-400 text-xs leading-relaxed max-w-sm">
-                        Manage web hosting services, domain registrations, automated billing, operations, and support desk relationships in one powerful portal.
-                    </p>
-                </div>
+            {/* Left Column: Balanced Hero Image Card */}
+            <div className="hidden md:flex md:w-3/5 h-full relative overflow-hidden select-none z-10 border-r border-slate-200 bg-[#f8fafc] p-3 justify-center items-center">
+                <img
+                    src={heroImage}
+                    alt="VMS Security Platform"
+                    className="w-full h-auto rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.05)] border border-slate-100 object-contain"
+                />
             </div>
 
-            {/* Right Column: Login Form */}
-            <div className="w-full md:w-1/2 h-full flex flex-col justify-between p-5 sm:p-8 relative bg-transparent overflow-y-auto z-10">
+            {/* Right Column: Clean Light Form (Matches Screenshot) */}
+            <div className="w-full md:w-2/5 h-full flex flex-col justify-between p-4 sm:py-8 sm:px-10 relative bg-[#f8fafc] overflow-y-auto z-10 text-slate-900">
 
-                {/* Top spacer */}
-                <div className="h-2 sm:h-4"></div>
+                <div className="w-full max-w-md mx-auto py-2 flex flex-col items-center">
+                    
+                    {/* Blue Building circular icon logo wrapper */}
+                    <div className="w-14 h-14 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.03)] mb-4 shrink-0">
+                        <svg className="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 2H9c-1.1 0-2 .9-2 2v3H3c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM5 20H3V9h2v11zm4 0H7V9h2v11zm12 0h-10v-2h2v-2h-2v-2h2v-2h-2v-2h2v-2h-2V4h10v16zm-2-14h-6v2h6V6zm0 4h-6v2h6v-2zm0 4h-6v2h6v-2z" />
+                        </svg>
+                    </div>
 
-                {/* Form Card Container (centered) */}
-                <div className="w-full max-w-md mx-auto z-10 flex flex-col justify-center flex-grow py-3">
-                    {/* Logo & Heading */}
-                    <div className="flex flex-col items-center mb-6">
-                        <div className="flex items-center gap-2 mb-2 select-none">
-                            <span className="text-4xl font-black tracking-tighter bg-gradient-to-r from-indigo-600 via-blue-700 to-indigo-900 bg-clip-text text-transparent">
-                                MYVMS
-                            </span>
-                        </div>
-                        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight text-center">
+                    {/* Headings */}
+                    <div className="text-center mb-5">
+                        <h2 className="text-3xl font-extrabold text-[#0f172a] tracking-tight">
                             Welcome Back
                         </h2>
-                        <p className="text-slate-400 text-xs mt-1 text-center">
-                            Sign in to your administration dashboard
+                        <p className="text-slate-500 text-sm mt-1.5">
+                            Sign in to your administration dashboard.
                         </p>
                     </div>
 
-                    {/* Premium Dark Glassmorphic Form Card */}
-                    <div className="bg-slate-900/40 backdrop-blur-2xl border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.55)] hover:border-indigo-500/20 transition-all duration-300">
+                    {/* Premium Light Form Card */}
+                    <div className="bg-white border border-slate-200/85 rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] w-full transition-all duration-300">
                         <form onSubmit={handleLogin} className="space-y-4">
-                            
-                            {/* Username Field */}
-                            <div className="space-y-1.5">
-                                <label htmlFor="username" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                            {/* Username Input */}
+                            <div className="space-y-2">
+                                <label htmlFor="username" className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                                     Username
                                 </label>
-                                <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                <div className="relative group">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5.5 h-5.5">
+                                            <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" />
                                         </svg>
                                     </span>
                                     <input
@@ -133,20 +108,29 @@ export default function Login() {
                                         placeholder="Enter your username"
                                         value={form.username}
                                         onChange={(e) => setForm({ ...form, username: e.target.value })}
-                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950/60 text-white text-xs sm:text-sm outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 focus:bg-slate-900/60"
+                                        className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-[#f8fafc] text-slate-800 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500/25"
                                     />
                                 </div>
                             </div>
 
-                            {/* Password Field */}
-                            <div className="space-y-1.5">
-                                <label htmlFor="password" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            {/* Password Input */}
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                    <label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Password
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={() => toast.error("Contact your administrator to reset credentials.")}
+                                        className="text-[11px] text-blue-600 hover:text-blue-500 font-bold focus:outline-none cursor-pointer"
+                                    >
+                                        Forgot Password?
+                                    </button>
+                                </div>
+                                <div className="relative group">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5.5 h-5.5">
+                                            <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
                                         </svg>
                                     </span>
                                     <input
@@ -157,47 +141,47 @@ export default function Login() {
                                         placeholder="Enter your password"
                                         value={form.password}
                                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                        className="w-full pl-11 pr-12 py-2.5 rounded-xl border border-slate-800 bg-slate-950/60 text-white text-xs sm:text-sm outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 focus:bg-slate-900/60"
+                                        className="w-full pl-12 pr-12 py-3 rounded-xl border border-slate-200 bg-[#f8fafc] text-slate-800 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500/25"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none cursor-pointer"
                                         tabIndex={-1}
                                     >
-                                        {showPassword ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                                            </svg>
-                                        ) : (
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4.5 h-4.5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                            </svg>
-                                        )}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                            {showPassword ? (
+                                                <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-18-18ZM22.676 12.553a11.249 11.249 0 0 1-2.631 4.31l-3.099-3.099a5.25 5.25 0 0 0-6.71-6.71L7.759 4.577a11.217 11.217 0 0 1 4.242-.827c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113Z" />
+                                            ) : (
+                                                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                            )}
+                                            {!showPassword && (
+                                                <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                                            )}
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Submit Button */}
-                             <button
+                            {/* Sign In Button */}
+                            <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-2.5 rounded-xl text-white text-xs sm:text-sm font-semibold tracking-wider transition-all duration-300 bg-indigo-600 hover:bg-indigo-700 shadow-[0_4px_15px_rgba(30,58,138,0.3)] hover:shadow-[0_4px_25px_rgba(30,58,138,0.5)] hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-75 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
+                                className="w-full mt-2 py-3 rounded-xl text-white text-sm font-bold tracking-wider transition-all duration-300 bg-blue-600 hover:bg-blue-700 shadow-[0_4px_12px_rgba(37,99,235,0.2)] hover:shadow-[0_4px_20px_rgba(37,99,235,0.35)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-75 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
                             >
                                 {loading ? (
                                     <>
-                                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                         </svg>
-                                        Signing in...
+                                        <span>Signing in...</span>
                                     </>
                                 ) : (
                                     <>
                                         <span>Sign In</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4.5 h-4.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 6.75 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                                         </svg>
                                     </>
                                 )}
@@ -206,15 +190,17 @@ export default function Login() {
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="z-10 mt-auto flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-slate-900/60 pt-3 text-[10px] text-slate-500 w-full max-w-md mx-auto">
-                    <div className="flex items-center gap-1.5">
-                        <span>Powered by</span>
-                        <img src={jwlogo} alt="Jeenweb" className="h-9 w-auto rounded-sm" />
-                    </div>
-                    <div className="text-center sm:text-right">
-                        <div>Helpline: <a href="tel:9824466017" className="font-semibold text-slate-400">9824466017</a></div>
-                        <div>Email: <a href="mailto:info@jeenweb.com" className="font-semibold text-slate-400">info@jeenweb.com</a></div>
+                {/* Footer section inside content container */}
+                <div className="z-10 mt-auto w-full max-w-md mx-auto pt-4 border-t border-slate-200">
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                        <div className="flex items-center gap-2">
+                            <span className="text-slate-400">Powered by</span>
+                            <img src={jwlogo} alt="Jeenweb" className="h-10 w-auto rounded-sm cursor-pointer hover:opacity-80 transition-opacity" onClick={() => window.open("https://www.jeenweb.com", "_blank")} />
+                        </div>
+                        <div className="text-center sm:text-right flex flex-col gap-0.5 text-slate-400">
+                            <span>Helpline: <a href="tel:9824466017" className="font-semibold text-slate-500 hover:text-blue-600 transition-colors">9824466017</a></span>
+                            <span>Email: <a href="mailto:info@jeenweb.com" className="font-semibold text-slate-500 hover:text-blue-600 transition-colors">info@jeenweb.com</a></span>
+                        </div>
                     </div>
                 </div>
             </div>
