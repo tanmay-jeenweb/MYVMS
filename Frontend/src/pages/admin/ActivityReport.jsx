@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import Navbar from "../../components/Navbar";
 import DataTable from "../../components/DataTable";
 import { fetchActivityLogs } from "../../api/authApi";
 import toast from "react-hot-toast";
@@ -229,8 +228,6 @@ export default function ActivityReport() {
 
   return (
     <div className="flex-1 flex flex-col bg-slate-50 font-sans text-slate-900 min-h-screen">
-      <Navbar title="User Activity Report" />
-
       <main className="flex-1 flex flex-col w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex-1 flex flex-col mb-8">
           <DataTable

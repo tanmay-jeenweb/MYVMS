@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import Navbar from "../../../components/Navbar";
 import { getUserTypes, updateUserType, deleteUserType } from "../../../api/userTypeMasterApi";
 import DataTable from "../../../components/DataTable";
 import toast from "react-hot-toast";
@@ -538,8 +537,6 @@ export default function UserGroupMaster() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "#f8fafc", fontFamily: "'Inter',sans-serif" }}>
-      <Navbar title="CRM Admin" />
-
       <main style={{ flex: 1, display: "flex", flexDirection: "column", width: "100%", margin: "0 auto", padding: "32px 30px" }}>
         {error && (
           <div style={{ background: "#fff1f2", border: "1px solid #fecdd3", color: "#be123c", padding: "12px 16px", borderRadius: 10, marginBottom: 20, fontSize: 14, fontWeight: 500 }}>

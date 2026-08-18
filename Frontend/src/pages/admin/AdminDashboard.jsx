@@ -8,7 +8,6 @@ import {
     fetchAuditLogs,
     toggleUserActive
 } from "../../api/authApi";
-import Navbar from "../../components/Navbar";
 import DataTable from "../../components/DataTable";
 import { useNavigate } from "react-router-dom";
 import { usePermission } from "../../context/PermissionContext";
@@ -352,8 +351,6 @@ export default function AdminDashboard() {
 
     return (
         <div className="flex-1 flex flex-col bg-slate-50 font-sans text-slate-900">
-            <Navbar title="CRM Admin" />
-
             <main className="flex-1 flex flex-col w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
 
 

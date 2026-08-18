@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
 import { usePermission } from "../../context/PermissionContext";
 
 export default function UserHome() {
@@ -15,8 +14,6 @@ export default function UserHome() {
 
     return (
         <div className="flex flex-col min-h-screen bg-slate-50 font-sans text-slate-900">
-            <Navbar title="CRM Dashboard" />
-
             <main className="flex-1 w-full max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 {/* Welcome Banner */}
                 <div className="relative overflow-hidden bg-gradient-to-r from-[#1e3a8a] to-[#0c2340] rounded-3xl p-8 sm:p-12 shadow-xl text-white mb-10 transition-all hover:shadow-2xl">
