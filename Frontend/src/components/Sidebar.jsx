@@ -11,11 +11,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
     const isAdmin = user.role === "admin" || user.role === "super admin";
 
     const [isModulesOpen, setIsModulesOpen] = useState(() => {
-        return ["/admin/dashboard", "/admin/user-types"].includes(location.pathname);
+        return ["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units"].includes(location.pathname);
     });
 
     useEffect(() => {
-        if (["/admin/dashboard", "/admin/user-types"].includes(location.pathname)) {
+        if (["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units"].includes(location.pathname)) {
             setIsModulesOpen(true);
         }
     }, [location.pathname]);
@@ -47,6 +47,20 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             moduleKey: "user_type",
             icon: "fa-solid fa-user-shield",
             desc: "Configure access roles"
+        },
+        {
+            name: "Society Module",
+            path: "/admin/societies",
+            moduleKey: "society_master",
+            icon: "fa-solid fa-building",
+            desc: "Manage societies, buildings & floors"
+        },
+        {
+            name: "Unit Module",
+            path: "/admin/units",
+            moduleKey: "unit_module",
+            icon: "fa-solid fa-house-chimney",
+            desc: "Manage residential/commercial units"
         }
     ];
 

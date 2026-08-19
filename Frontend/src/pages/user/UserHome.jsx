@@ -19,7 +19,7 @@ export default function UserHome() {
                 <div className="relative overflow-hidden bg-gradient-to-r from-[#1e3a8a] to-[#0c2340] rounded-3xl p-8 sm:p-12 shadow-xl text-white mb-10 transition-all hover:shadow-2xl">
                     <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
                     <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-                    
+
                     <div className="relative z-10 max-w-2xl">
                         <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-sky-200 border border-white/10 mb-4 backdrop-blur-sm">
                             Platform Status: Active
@@ -36,7 +36,7 @@ export default function UserHome() {
                 {/* Quick Action Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {/* Profile Card */}
-                    <div 
+                    <div
                         onClick={() => navigate("/profile")}
                         className="group relative flex flex-col justify-between p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden"
                     >
@@ -65,7 +65,7 @@ export default function UserHome() {
 
                     {/* User Modules Card */}
                     {canManageUsers && (
-                        <div 
+                        <div
                             onClick={() => navigate("/admin/dashboard")}
                             className="group relative flex flex-col justify-between p-6 rounded-2xl border border-slate-200 bg-white hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden"
                         >
@@ -95,7 +95,7 @@ export default function UserHome() {
 
                     {/* User Type Modules Card */}
                     {canManageRoles && (
-                        <div 
+                        <div
                             onClick={() => navigate("/admin/user-types")}
                             className="group relative flex flex-col justify-between p-6 rounded-2xl border border-slate-200 bg-white hover:border-violet-200 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden"
                         >
@@ -125,7 +125,7 @@ export default function UserHome() {
 
                     {/* Activity Report Card */}
                     {canViewReport && (
-                        <div 
+                        <div
                             onClick={() => navigate("/admin/report")}
                             className="group relative flex flex-col justify-between p-6 rounded-2xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 cursor-pointer hover:-translate-y-1 overflow-hidden"
                         >

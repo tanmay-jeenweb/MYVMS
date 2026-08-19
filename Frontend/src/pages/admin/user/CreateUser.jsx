@@ -63,25 +63,28 @@ export default function CreateUser() {
     };
 
     return (
-        <div className="flex-1 bg-slate-50 font-sans text-slate-900">
-            <main className=" mx-auto py-8 px-4 sm:px-6 lg:px-8">
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900">Create New User</h1>
-                        <p className="text-slate-500 mt-1">Add a new user to the system.</p>
-                    </div>
-                    <button
-                        onClick={() => navigate("/admin/dashboard")}
-                        className="text-slate-500 hover:text-slate-700 font-medium text-sm flex items-center gap-1 transition-colors"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                        </svg>
-                        Back to User list
-                    </button>
+        <div className="w-full flex-1 flex flex-col min-h-screen bg-slate-50/50">
+            {/* TOP BAR / NAVIGATION HEADER */}
+            <header className="w-full bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-30">
+                <div>
+                    <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <i className="fa-solid fa-user-plus text-blue-900"></i> Create New User
+                    </h1>
+                    <p className="text-xs text-slate-400 font-medium mt-0.5">
+                        Register and configure a new system user profile.
+                    </p>
                 </div>
 
-                <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <button
+                    onClick={() => navigate("/admin/dashboard")}
+                    className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
+                >
+                    <i className="fa-solid fa-arrow-left"></i> Back to Dashboard
+                </button>
+            </header>
+
+            <main className="w-full max-w-4xl mx-auto flex-1 flex flex-col p-6">
+                <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <form onSubmit={handleCreateUser} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
