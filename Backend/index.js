@@ -13,6 +13,8 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const userTypeModulesRoutes = require("./routes/userTypeModulesRoutes.js");
 const societyRoutes = require("./routes/societyRoutes.js");
 const unitRoutes = require("./routes/unitRoutes.js");
+const gateRoutes = require("./routes/gateRoutes.js");
+const guardRoutes = require("./routes/guardRoutes.js");
 
 // Model Initializations
 const { initUserModel } = require("./models/userModel.js");
@@ -21,6 +23,8 @@ const { createAuditLogsTable } = require("./models/auditLogModel.js");
 const { createUserDevicesTable } = require("./models/deviceModel.js");
 const { initSocietyModel } = require("./models/societyModel.js");
 const { initUnitModel } = require("./models/unitModel.js");
+const { initGateModel } = require("./models/gateModel.js");
+const { initGuardModel } = require("./models/guardModel.js");
 
 
 const app = express();
@@ -63,6 +67,8 @@ app.use(["/api/admin", "/admin"], adminRoutes);
 app.use(["/api/usertypes", "/usertypes"], userTypeModulesRoutes);
 app.use(["/api/societies", "/societies"], societyRoutes);
 app.use(["/api/units", "/units"], unitRoutes);
+app.use(["/api/gates", "/gates"], gateRoutes);
+app.use(["/api/guards", "/guards"], guardRoutes);
 
 
 // Global 404 handler
@@ -89,6 +95,8 @@ const startServer = async () => {
         await createUserDevicesTable();
         await initSocietyModel();
         await initUnitModel();
+        await initGateModel();
+        await initGuardModel();
 
         console.log("All database tables are initialized and ready.");
 

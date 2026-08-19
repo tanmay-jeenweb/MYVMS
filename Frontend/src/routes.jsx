@@ -16,6 +16,8 @@ import MainLayout from "./components/MainLayout";
 import GuestLayout from "./components/GuestLayout";
 import SocietyModule from "./pages/admin/SocietyModule";
 import UnitModule from "./pages/admin/UnitModule";
+import GateModule from "./pages/admin/GateModule";
+import GuardModule from "./pages/admin/GuardModule";
 
 export default function AppRoutes() {
     return (
@@ -110,6 +112,24 @@ export default function AppRoutes() {
                     <Route
                         path="/admin/units"
                         element={<UnitModule />}
+                    />
+                </Route>
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="gate_master" requiredAction="read" />}>
+                <Route element={<MainLayout />}>
+                    <Route
+                        path="/admin/gates"
+                        element={<GateModule />}
+                    />
+                </Route>
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRole="admin" requiredModule="guard_master" requiredAction="read" />}>
+                <Route element={<MainLayout />}>
+                    <Route
+                        path="/admin/guards"
+                        element={<GuardModule />}
                     />
                 </Route>
             </Route>

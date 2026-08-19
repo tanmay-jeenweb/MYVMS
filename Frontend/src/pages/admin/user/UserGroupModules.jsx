@@ -20,7 +20,9 @@ const PERMISSION_SECTIONS = [
     title: "Master Data",
     modules: [
       { key: "society_master", label: "Society Module" },
-      { key: "unit_module", label: "Unit Module" }
+      { key: "unit_module", label: "Unit Module" },
+      { key: "gate_master", label: "Gate Master" },
+      { key: "guard_master", label: "Guard Master" }
     ]
   }
 ];
