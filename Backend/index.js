@@ -11,12 +11,16 @@ const { connectDB } = require("./config/db.js");
 const authRoutes = require("./routes/authRoutes.js");
 const adminRoutes = require("./routes/adminRoutes.js");
 const userTypeModulesRoutes = require("./routes/userTypeModulesRoutes.js");
+const societyRoutes = require("./routes/societyRoutes.js");
+const unitRoutes = require("./routes/unitRoutes.js");
 
 // Model Initializations
 const { initUserModel } = require("./models/userModel.js");
 const { createUserTypesTable, createUserTypePermissionsTable } = require("./models/userTypeModel.js");
 const { createAuditLogsTable } = require("./models/auditLogModel.js");
 const { createUserDevicesTable } = require("./models/deviceModel.js");
+const { initSocietyModel } = require("./models/societyModel.js");
+const { initUnitModel } = require("./models/unitModel.js");
 
 
 const app = express();
@@ -57,6 +61,8 @@ app.use((req, res, next) => {
 app.use(["/api/auth", "/auth"], authRoutes);
 app.use(["/api/admin", "/admin"], adminRoutes);
 app.use(["/api/usertypes", "/usertypes"], userTypeModulesRoutes);
+app.use(["/api/societies", "/societies"], societyRoutes);
+app.use(["/api/units", "/units"], unitRoutes);
 
 
 // Global 404 handler
@@ -81,6 +87,8 @@ const startServer = async () => {
         await createUserTypePermissionsTable();
         await createAuditLogsTable();
         await createUserDevicesTable();
+        await initSocietyModel();
+        await initUnitModel();
 
         console.log("All database tables are initialized and ready.");
 
