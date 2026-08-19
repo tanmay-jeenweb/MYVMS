@@ -251,16 +251,16 @@ export default function UnitModule() {
     // --- DataTable Columns Definition ---
     const columns = useMemo(() => [
         {
-            name: "Unit Number",
-            selector: row => row.unit_number,
+            key: "unit_number",
+            label: "Unit Number",
             sortable: true,
-            cell: row => <span className="font-bold text-slate-800">{row.unit_number}</span>
+            render: row => <span className="font-bold text-slate-800">{row.unit_number}</span>
         },
         {
-            name: "Society",
-            selector: row => row.society_name,
+            key: "society_name",
+            label: "Society",
             sortable: true,
-            cell: row => (
+            render: row => (
                 <div>
                     <span className="font-semibold text-slate-700 block">{row.society_name}</span>
                     <span className="text-[10px] text-slate-400 font-mono">{row.society_code}</span>
@@ -268,10 +268,10 @@ export default function UnitModule() {
             )
         },
         {
-            name: "Structure",
-            selector: row => row.unit_category,
+            key: "unit_category",
+            label: "Structure",
             sortable: true,
-            cell: row => {
+            render: row => {
                 if (row.unit_category === "bungalow") {
                     return <span className="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">Bungalow</span>;
                 }
@@ -285,21 +285,22 @@ export default function UnitModule() {
             }
         },
         {
-            name: "Type",
-            selector: row => row.type,
+            key: "type",
+            label: "Type",
             sortable: true,
-            cell: row => <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">{row.type}</span>
+            render: row => <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">{row.type}</span>
         },
         {
-            name: "Area",
-            selector: row => row.area || "-",
-            sortable: true
+            key: "area",
+            label: "Area",
+            sortable: true,
+            render: row => row.area || "-"
         },
         {
-            name: "Occupancy",
-            selector: row => row.occupancy,
+            key: "occupancy",
+            label: "Occupancy",
             sortable: true,
-            cell: row => {
+            render: row => {
                 let badgeClass = "bg-slate-50 text-slate-700";
                 if (row.occupancy === "Self Occupied") badgeClass = "bg-emerald-50 text-emerald-700";
                 if (row.occupancy === "Rented") badgeClass = "bg-sky-50 text-sky-700";
@@ -309,10 +310,10 @@ export default function UnitModule() {
             }
         },
         {
-            name: "Status",
-            selector: row => row.status,
+            key: "status",
+            label: "Status",
             sortable: true,
-            cell: row => (
+            render: row => (
                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     row.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
                 }`}>
@@ -321,12 +322,10 @@ export default function UnitModule() {
             )
         },
         {
-            name: "Actions",
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
-            width: "120px",
-            cell: row => (
+            key: "actions",
+            label: "Actions",
+            sortable: false,
+            render: row => (
                 <div className="flex gap-1">
                     {canUpdate && (
                         <button
