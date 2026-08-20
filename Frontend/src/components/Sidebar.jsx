@@ -11,11 +11,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
     const isAdmin = user.role === "admin" || user.role === "super admin";
 
     const [isModulesOpen, setIsModulesOpen] = useState(() => {
-        return ["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards"].includes(location.pathname);
+        return ["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards", "/admin/residents"].includes(location.pathname);
     });
 
     useEffect(() => {
-        if (["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards"].includes(location.pathname)) {
+        if (["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards", "/admin/residents"].includes(location.pathname)) {
             setIsModulesOpen(true);
         }
     }, [location.pathname]);
@@ -75,6 +75,13 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             moduleKey: "guard_master",
             icon: "fa-solid fa-shield-halved",
             desc: "Manage guards profile & agency details"
+        },
+        {
+            name: "Resident Module",
+            path: "/admin/residents",
+            moduleKey: "resident_module",
+            icon: "fa-solid fa-people-roof",
+            desc: "Manage resident owners, tenants & family members"
         }
     ];
 

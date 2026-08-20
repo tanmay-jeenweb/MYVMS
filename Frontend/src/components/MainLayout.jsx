@@ -5,7 +5,7 @@ import Footer from "./Footer";
 
 export default function MainLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     return (
         <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">

@@ -10,6 +10,7 @@ const MODULES = [
     { key: 'unit_module', label: 'Unit Module' },
     { key: 'gate_master', label: 'Gate Master' },
     { key: 'guard_master', label: 'Guard Master' },
+    { key: 'resident_module', label: 'Resident Module' },
 ];
 
 // ─── Table creation ──────────────────────────────────────────────────────────
