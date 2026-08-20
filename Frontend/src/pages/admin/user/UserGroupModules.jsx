@@ -15,6 +15,15 @@ const PERMISSION_SECTIONS = [
       { key: "device_approval", label: "Device Approval" },
       { key: "activity_report", label: "Activity Report" },
     ]
+  },
+  {
+    title: "Master Data",
+    modules: [
+      { key: "society_master", label: "Society Module" },
+      { key: "unit_module", label: "Unit Module" },
+      { key: "gate_master", label: "Gate Master" },
+      { key: "guard_master", label: "Guard Master" }
+    ]
   }
 ];
 
@@ -198,28 +207,8 @@ function EditForm({ row, onClose, onSave, saving }) {
   });
 
   return (
-    <div className="flex flex-col flex-1 font-sans" style={{ background: "linear-gradient(135deg,#f8fafc 0%,#eef2ff 100%)" }}>
-
-      <main className="flex-1 flex flex-col w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-7">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800 m-0">Edit User Type</h1>
-            <p className="text-slate-500 mt-1 text-sm">Update the user group name and its module permissions.</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="flex items-center gap-1.5 text-slate-500 bg-transparent border-none cursor-pointer text-sm font-medium hover:text-slate-700 transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            Back to User Types
-          </button>
-        </div>
-
-        <form onSubmit={(e) => { e.preventDefault(); onSave(row.id, typeName, permissions); }}>
+    <div className="w-full">
+      <form onSubmit={(e) => { e.preventDefault(); onSave(row.id, typeName, permissions); }} className="space-y-6">
 
           {/* Type Name Card */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-5 shadow-sm">
@@ -408,8 +397,7 @@ function EditForm({ row, onClose, onSave, saving }) {
             </button>
           </div>
         </form>
-      </main>
-    </div>
+      </div>
   );
 }
 
@@ -536,42 +524,70 @@ export default function UserGroupMaster() {
   }, [saving, hasPermission]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "#f8fafc", fontFamily: "'Inter',sans-serif" }}>
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", width: "100%", margin: "0 auto", padding: "32px 30px" }}>
+    <div className="w-full flex-1 flex flex-col min-h-screen bg-slate-50/50">
+      {/* TOP BAR / NAVIGATION HEADER */}
+      <header className="w-full bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-30">
+        <div>
+          <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+            <i className="fa-solid fa-user-shield text-blue-900"></i> User Types Modules
+          </h1>
+          <p className="text-xs text-slate-400 font-medium mt-0.5">
+            {editingRow 
+              ? `Configure permissions for user group type: ${editingRow.typeName}` 
+              : "View and manage user types, access groups, and module-level permissions."
+            }
+          </p>
+        </div>
+
+        {editingRow && (
+          <button
+            onClick={() => setEditingRow(null)}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
+          >
+            <i className="fa-solid fa-arrow-left"></i> Back to User Types
+          </button>
+        )}
+      </header>
+
+      <main className="w-full flex-1 flex flex-col p-6">
         {error && (
-          <div style={{ background: "#fff1f2", border: "1px solid #fecdd3", color: "#be123c", padding: "12px 16px", borderRadius: 10, marginBottom: 20, fontSize: 14, fontWeight: 500 }}>
+          <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl shadow-sm font-medium mb-6">
             {error}
           </div>
         )}
         {editingRow ? (
-          <EditForm
-            row={editingRow}
-            onClose={() => setEditingRow(null)}
-            onSave={handleSave}
-            saving={saving}
-          />
+          <div className="w-full">
+            <EditForm
+              row={editingRow}
+              onClose={() => setEditingRow(null)}
+              onSave={handleSave}
+              saving={saving}
+            />
+          </div>
         ) : (
-          <DataTable
-            tableId="user_group_modules"
-            title="User Type Modules"
-            data={userTypes}
-            columns={columns}
-            loading={loading}
-            searchPlaceholder="Search user types..."
-            actionButton={
-              hasPermission("user_type", "write") ? (
-                <button
-                  onClick={() => navigate("/admin/user-types/create")}
-                   style={{ display: "flex", width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 9, background: "linear-gradient(135deg,#1e3a8a,#172554)", color: "#fff", border: "none", cursor: "pointer", boxShadow: "0 2px 8px rgba(30, 58, 138, 0.35)" }}
-                  title="Create User Type"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" style={{ width: 18, height: 18 }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                  </svg>
-                </button>
-              ) : null
-            }
-          />
+          <div className="w-full flex-1 flex flex-col">
+            <DataTable
+              tableId="user_group_modules"
+              title="User Type Modules"
+              data={userTypes}
+              columns={columns}
+              loading={loading}
+              searchPlaceholder="Search user types..."
+              actionButton={
+                hasPermission("user_type", "write") ? (
+                  <button
+                    onClick={() => navigate("/admin/user-types/create")}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white shadow-md hover:shadow-lg shadow-indigo-100 transition-all cursor-pointer hover:scale-105"
+                    title="Create User Type"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                  </button>
+                ) : null
+              }
+            />
+          </div>
         )}
       </main>
     </div>

@@ -6,6 +6,10 @@ const MODULES = [
     { key: 'user_master', label: 'User Modules' },
     { key: 'device_approval', label: 'Device Approval' },
     { key: 'activity_report', label: 'Activity Report' },
+    { key: 'society_master', label: 'Society Master' },
+    { key: 'unit_module', label: 'Unit Module' },
+    { key: 'gate_master', label: 'Gate Master' },
+    { key: 'guard_master', label: 'Guard Master' },
 ];
 
 // ─── Table creation ──────────────────────────────────────────────────────────

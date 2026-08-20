@@ -12,6 +12,15 @@ const PERMISSION_SECTIONS = [
       { key: "device_approval",         label: "Device Approval" },
       { key: "activity_report",         label: "Activity Report" },
     ]
+  },
+  {
+    title: "Master Data",
+    modules: [
+      { key: "society_master",         label: "Society Module" },
+      { key: "unit_module",            label: "Unit Module" },
+      { key: "gate_master",            label: "Gate Master" },
+      { key: "guard_master",           label: "Guard Master" }
+    ]
   }
 ];
 
@@ -151,25 +160,27 @@ export default function CreateUserType() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "linear-gradient(135deg,#f8fafc 0%,#eef2ff 100%)", fontFamily: "'Inter',sans-serif" }}>
-      <main className="flex-1 flex flex-col w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
-          <div>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: "#1e293b", margin: 0 }}>Create User Type</h1>
-            <p style={{ color: "#64748b", marginTop: 4, fontSize: 14 }}>Define a new user group and set its module permissions.</p>
-          </div>
-          <button
-            onClick={() => navigate("/admin/user-types")}
-            style={{ display: "flex", alignItems: "center", gap: 6, color: "#64748b", background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 500 }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: 16, height: 16 }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            Back to User Types
-          </button>
+    <div className="w-full flex-1 flex flex-col min-h-screen bg-slate-50/50">
+      {/* TOP BAR / NAVIGATION HEADER */}
+      <header className="w-full bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-30">
+        <div>
+          <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+            <i className="fa-solid fa-user-shield text-blue-900"></i> Create User Type
+          </h1>
+          <p className="text-xs text-slate-400 font-medium mt-0.5">
+            Define a new user group and set its module permissions.
+          </p>
         </div>
+
+        <button
+          onClick={() => navigate("/admin/user-types")}
+          className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
+        >
+          <i className="fa-solid fa-arrow-left"></i> Back to User Types
+        </button>
+      </header>
+
+      <main className="w-full flex-1 flex flex-col p-6">
 
         {/* Alerts */}
         {/* {message && (

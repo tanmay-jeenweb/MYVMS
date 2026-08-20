@@ -11,11 +11,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
     const isAdmin = user.role === "admin" || user.role === "super admin";
 
     const [isModulesOpen, setIsModulesOpen] = useState(() => {
-        return ["/admin/dashboard", "/admin/user-types"].includes(location.pathname);
+        return ["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards"].includes(location.pathname);
     });
 
     useEffect(() => {
-        if (["/admin/dashboard", "/admin/user-types"].includes(location.pathname)) {
+        if (["/admin/dashboard", "/admin/user-types", "/admin/societies", "/admin/units", "/admin/gates", "/admin/guards"].includes(location.pathname)) {
             setIsModulesOpen(true);
         }
     }, [location.pathname]);
@@ -47,6 +47,34 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             moduleKey: "user_type",
             icon: "fa-solid fa-user-shield",
             desc: "Configure access roles"
+        },
+        {
+            name: "Society Module",
+            path: "/admin/societies",
+            moduleKey: "society_master",
+            icon: "fa-solid fa-building",
+            desc: "Manage societies, buildings & floors"
+        },
+        {
+            name: "Unit Module",
+            path: "/admin/units",
+            moduleKey: "unit_module",
+            icon: "fa-solid fa-house-chimney",
+            desc: "Manage residential/commercial units"
+        },
+        {
+            name: "Gate Module",
+            path: "/admin/gates",
+            moduleKey: "gate_master",
+            icon: "fa-solid fa-door-open",
+            desc: "Manage gates, timing & entry rules"
+        },
+        {
+            name: "Guards Module",
+            path: "/admin/guards",
+            moduleKey: "guard_master",
+            icon: "fa-solid fa-shield-halved",
+            desc: "Manage guards profile & agency details"
         }
     ];
 
@@ -121,7 +149,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
                     {/* Dashboard */}
                     <Link
                         to="/user/home"
