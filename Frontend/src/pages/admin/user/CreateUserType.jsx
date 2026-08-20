@@ -180,7 +180,7 @@ export default function CreateUserType() {
         </button>
       </header>
 
-      <main className="w-full max-w-4xl mx-auto flex-1 flex flex-col p-6">
+      <main className="w-full flex-1 flex flex-col p-6">
 
         {/* Alerts */}
         {/* {message && (

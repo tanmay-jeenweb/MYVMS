@@ -83,7 +83,7 @@ export default function CreateUser() {
                 </button>
             </header>
 
-            <main className="w-full max-w-4xl mx-auto flex-1 flex flex-col p-6">
+            <main className="w-full flex-1 flex flex-col p-6">
                 <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <form onSubmit={handleCreateUser} className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

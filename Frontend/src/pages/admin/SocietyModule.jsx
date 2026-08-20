@@ -575,7 +575,7 @@ export default function SocietyModule() {
                 
                 {/* FORM VIEW (Add or Edit) */}
                 {formMode !== "list" && (
-                    <div className="w-full max-w-4xl mx-auto">
+                    <div className="w-full">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* SECTION 1: Basic details */}
                             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">

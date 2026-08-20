@@ -417,7 +417,7 @@ export default function GuardModule() {
             <main className="w-full flex-1 flex flex-col p-6">
                 {/* FORM VIEW */}
                 {formMode !== "list" && (
-                    <div className="w-full max-w-4xl mx-auto space-y-6">
+                    <div className="w-full space-y-6">
                         <form onSubmit={handleSubmit} className="w-full space-y-6">
                             
                             {/* Section 1: Guard Profile */}
