@@ -96,6 +96,19 @@ export default function ResidentModule() {
         }
     };
 
+    // --- Handle Unit Selection (Auto-carry owner details) ---
+    const handleUnitChange = (e) => {
+        const selectedUnitId = e.target.value;
+        setUnitId(selectedUnitId);
+        if (selectedUnitId) {
+            const foundUnit = units.find(u => u.id === Number(selectedUnitId));
+            if (foundUnit && foundUnit.status === "active") {
+                setOwnerName(foundUnit.owner_name || "");
+                setOwnerMobile(foundUnit.owner_number || "");
+            }
+        }
+    };
+
     // --- Reset Form Fields ---
     const resetForm = () => {
         setUnitId("");
@@ -740,7 +753,7 @@ export default function ResidentModule() {
                                         </label>
                                         <select
                                             value={unitId}
-                                            onChange={(e) => setUnitId(e.target.value)}
+                                            onChange={handleUnitChange}
                                             required
                                             className="w-full box-border border border-slate-300 rounded-xl py-2.5 px-3.5 text-sm outline-none text-slate-800 focus:border-indigo-600 bg-white"
                                         >

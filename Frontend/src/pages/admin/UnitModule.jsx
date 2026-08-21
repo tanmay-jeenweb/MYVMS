@@ -38,6 +38,8 @@ export default function UnitModule() {
     const [area, setArea] = useState("");
     const [occupancy, setOccupancy] = useState("Vacant"); // 'Self Occupied', 'Rented', 'Vacant'
     const [status, setStatus] = useState("active"); // 'active', 'inactive'
+    const [ownerName, setOwnerName] = useState("");
+    const [ownerNumber, setOwnerNumber] = useState("");
     
     const [saving, setSaving] = useState(false);
 
@@ -139,6 +141,8 @@ export default function UnitModule() {
         setArea("");
         setOccupancy("Vacant");
         setStatus("active");
+        setOwnerName("");
+        setOwnerNumber("");
         setSelectedId(null);
         setFormMode("list");
     };
@@ -158,6 +162,8 @@ export default function UnitModule() {
                 setArea(u.area || "");
                 setOccupancy(u.occupancy);
                 setStatus(u.status);
+                setOwnerName(u.owner_name || "");
+                setOwnerNumber(u.owner_number || "");
 
                 // Since society details load asynchronously, set building and floor IDs using a timeout to ensure list binds first
                 setTimeout(() => {
@@ -220,7 +226,9 @@ export default function UnitModule() {
             type: unitType,
             area: area.trim(),
             occupancy: occupancy,
-            status: status
+            status: status,
+            owner_name: status === "active" ? ownerName.trim() : "",
+            owner_number: status === "active" ? ownerNumber.trim() : ""
         };
 
         try {
@@ -593,6 +601,42 @@ export default function UnitModule() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* SECTION 4: Owner Details (Conditional) */}
+                            {status === "active" && (
+                                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                                    <h3 className="text-sm font-extrabold text-blue-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
+                                        <i className="fa-solid fa-user-tie"></i> Owner Details
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                                                Owner Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Owner Name"
+                                                value={ownerName}
+                                                onChange={(e) => setOwnerName(e.target.value)}
+                                                className="w-full box-border border border-slate-300 rounded-xl py-2.5 px-3.5 text-sm outline-none text-slate-800 focus:border-indigo-600"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
+                                                Owner Number
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Owner Number"
+                                                value={ownerNumber}
+                                                onChange={(e) => setOwnerNumber(e.target.value)}
+                                                className="w-full box-border border border-slate-300 rounded-xl py-2.5 px-3.5 text-sm outline-none text-slate-800 focus:border-indigo-600"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Form Actions */}
                             <div className="flex justify-end gap-3 pt-4">
