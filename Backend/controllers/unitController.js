@@ -68,7 +68,9 @@ const addUnit = async (req, res) => {
             type,
             area,
             occupancy,
-            status
+            status,
+            owner_name,
+            owner_number
         } = req.body;
 
         if (!society_id || !unit_number || !type) {
@@ -143,8 +145,8 @@ const addUnit = async (req, res) => {
         // Insert unit
         const insertQuery = `
             INSERT INTO units (
-                society_id, building_id, floor_id, unit_category, unit_number, type, area, occupancy, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                society_id, building_id, floor_id, unit_category, unit_number, type, area, occupancy, status, owner_name, owner_number
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const [result] = await db.execute(insertQuery, [
             society_id,
@@ -155,7 +157,9 @@ const addUnit = async (req, res) => {
             type,
             area || null,
             occupancy || 'Vacant',
-            status || 'active'
+            status || 'active',
+            status === 'active' ? (owner_name || null) : null,
+            status === 'active' ? (owner_number || null) : null
         ]);
 
         const unitId = result.insertId;
@@ -169,7 +173,7 @@ const addUnit = async (req, res) => {
             'Unit Module',
             'created',
             null,
-            { id: unitId, unit_number, society_id, type }
+            { id: unitId, unit_number, society_id, type, owner_name, owner_number }
         );
 
         return res.status(201).json({
@@ -196,7 +200,9 @@ const updateUnit = async (req, res) => {
             type,
             area,
             occupancy,
-            status
+            status,
+            owner_name,
+            owner_number
         } = req.body;
 
         if (!society_id || !unit_number || !type) {
@@ -280,7 +286,7 @@ const updateUnit = async (req, res) => {
         // Update
         const updateQuery = `
             UPDATE units SET
-                society_id = ?, building_id = ?, floor_id = ?, unit_category = ?, unit_number = ?, type = ?, area = ?, occupancy = ?, status = ?
+                society_id = ?, building_id = ?, floor_id = ?, unit_category = ?, unit_number = ?, type = ?, area = ?, occupancy = ?, status = ?, owner_name = ?, owner_number = ?
             WHERE id = ?
         `;
         await db.execute(updateQuery, [
@@ -293,6 +299,8 @@ const updateUnit = async (req, res) => {
             area || null,
             occupancy || 'Vacant',
             status || 'active',
+            status === 'active' ? (owner_name || null) : null,
+            status === 'active' ? (owner_number || null) : null,
             id
         ]);
 
@@ -304,8 +312,8 @@ const updateUnit = async (req, res) => {
             adminDeviceId,
             'Unit Module',
             'updated',
-            { id, unit_number: existingUnit.unit_number, society_id: existingUnit.society_id },
-            { id, unit_number, society_id, type }
+            { id, unit_number: existingUnit.unit_number, society_id: existingUnit.society_id, owner_name: existingUnit.owner_name, owner_number: existingUnit.owner_number },
+            { id, unit_number, society_id, type, owner_name, owner_number }
         );
 
         return res.status(200).json({

@@ -13,6 +13,8 @@ const initUnitModel = async () => {
             area VARCHAR(50) DEFAULT NULL,
             occupancy ENUM('Self Occupied', 'Rented', 'Vacant') DEFAULT 'Vacant',
             status ENUM('active', 'inactive') DEFAULT 'active',
+            owner_name VARCHAR(255) DEFAULT NULL,
+            owner_number VARCHAR(50) DEFAULT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE,
@@ -40,7 +42,28 @@ const initUnitModel = async () => {
             console.log("Units table altered to add unit_category column.");
         }
     } catch (err) {
-        console.error("Error altering units table:", err);
+        console.error("Error altering units table for category:", err);
+    }
+
+    // Check if owner_name and owner_number columns exist, if not ALTER TABLE
+    try {
+        const [columns] = await db.execute(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_SCHEMA = DATABASE() 
+              AND TABLE_NAME = 'units' 
+              AND COLUMN_NAME = 'owner_name'
+        `);
+        if (columns.length === 0) {
+            await db.execute(`
+                ALTER TABLE units 
+                ADD COLUMN owner_name VARCHAR(255) DEFAULT NULL AFTER status,
+                ADD COLUMN owner_number VARCHAR(50) DEFAULT NULL AFTER owner_name
+            `);
+            console.log("Units table altered to add owner_name and owner_number columns.");
+        }
+    } catch (err) {
+        console.error("Error altering units table for owner details:", err);
     }
 
     console.log("Units table initialized successfully.");
