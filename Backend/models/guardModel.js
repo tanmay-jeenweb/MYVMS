@@ -6,6 +6,7 @@ const initGuardModel = async () => {
             id INT AUTO_INCREMENT PRIMARY KEY,
             full_name VARCHAR(255) NOT NULL,
             mobile_number VARCHAR(50) NOT NULL,
+            mobile_number_verified TINYINT(1) DEFAULT 0,
             security_agency VARCHAR(255) NOT NULL,
             id_proof_ref VARCHAR(255) NOT NULL,
             id_proof_doc VARCHAR(255) DEFAULT NULL,
@@ -41,6 +42,26 @@ const initGuardModel = async () => {
         }
     } catch (err) {
         console.error("Error altering guards table:", err);
+    }
+
+    // Check if mobile_number_verified column exists, if not ALTER TABLE
+    try {
+        const [columns] = await db.execute(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_SCHEMA = DATABASE() 
+              AND TABLE_NAME = 'guards' 
+              AND COLUMN_NAME = 'mobile_number_verified'
+        `);
+        if (columns.length === 0) {
+            await db.execute(`
+                ALTER TABLE guards 
+                ADD COLUMN mobile_number_verified TINYINT(1) DEFAULT 0 AFTER mobile_number
+            `);
+            console.log("Guards table altered to add mobile_number_verified column.");
+        }
+    } catch (err) {
+        console.error("Error altering guards table for mobile_number_verified:", err);
     }
 
     console.log("Guards table initialized successfully.");

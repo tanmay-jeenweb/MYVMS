@@ -5,7 +5,9 @@ const {
     addGuard,
     updateGuard,
     deleteGuard,
-    assignGate
+    assignGate,
+    sendOtp,
+    verifyOtp
 } = require("../controllers/guardController.js");
 const { verifyToken, verifyPermission } = require("../middleware/authMiddleware.js");
 const upload = require("../middleware/uploadMiddleware.js");
@@ -18,5 +20,8 @@ router.post("/add", verifyToken, verifyPermission("guard_master", "write"), uplo
 router.put("/update/:id", verifyToken, verifyPermission("guard_master", "update"), upload.single("doc"), updateGuard);
 router.put("/assign/:id", verifyToken, verifyPermission("guard_master", "update"), assignGate);
 router.delete("/delete/:id", verifyToken, verifyPermission("guard_master", "delete"), deleteGuard);
+
+router.post("/send-otp", verifyToken, sendOtp);
+router.post("/verify-otp", verifyToken, verifyOtp);
 
 module.exports = router;

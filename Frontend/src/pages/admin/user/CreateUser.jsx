@@ -15,9 +15,8 @@ export default function CreateUser() {
         password: "",
         userTypeId: "",
         mobNo: "",
-        dateOfJoin: "",
         deviceVerificationRequired: true,
-        role: "user"
+        role: "resident"
     });
     const [creatingUser, setCreatingUser] = useState(false);
 
@@ -48,9 +47,8 @@ export default function CreateUser() {
                 password: "",
                 userTypeId: "",
                 mobNo: "",
-                dateOfJoin: "",
                 deviceVerificationRequired: true,
-                role: "user"
+                role: "resident"
             });
             setTimeout(() => {
                 navigate("/admin/dashboard");
@@ -153,8 +151,9 @@ export default function CreateUser() {
                                     onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
                                     className="block w-full px-3 py-2 border border-slate-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 >
-                                    <option value="user">User</option>
                                     <option value="admin">Admin</option>
+                                    <option value="resident">Resident</option>
+                                    <option value="guard">Guard</option>
                                 </select>
                             </div>
                             <div>
@@ -166,15 +165,6 @@ export default function CreateUser() {
                                     onChange={(e) => setNewUserForm({ ...newUserForm, mobNo: e.target.value })}
                                     className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     placeholder="Enter mobile number"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Date of Join</label>
-                                <input
-                                    type="date"
-                                    value={newUserForm.dateOfJoin}
-                                    onChange={(e) => setNewUserForm({ ...newUserForm, dateOfJoin: e.target.value })}
-                                    className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 />
                             </div>
                         </div>

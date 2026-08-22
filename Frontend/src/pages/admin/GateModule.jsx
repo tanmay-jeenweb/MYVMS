@@ -527,7 +527,7 @@ export default function GateModule() {
                     <div className="w-full flex-1 flex flex-col mb-8">
                         <DataTable
                             tableId="gates_master_list"
-                            title="Gates Master"
+                            title="Gates List"
                             data={gates}
                             columns={columns}
                             loading={loading}

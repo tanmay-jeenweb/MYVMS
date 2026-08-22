@@ -1,6 +1,15 @@
 const db = require("../config/db.js");
 const { createAuditLog } = require("../models/auditLogModel.js");
 
+// Simple in-memory store for OTPs
+// Maps: owner_number -> { otp, expiresAt }
+const otpStore = new Map();
+
+const generateOtp = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // Generates 6-digit OTP
+};
+
+
 // ─── GET ALL UNITS ────────────────────────────────────────────────────────────
 const getUnits = async (req, res) => {
     try {
@@ -70,7 +79,8 @@ const addUnit = async (req, res) => {
             occupancy,
             status,
             owner_name,
-            owner_number
+            owner_number,
+            owner_number_verified
         } = req.body;
 
         if (!society_id || !unit_number || !type) {
@@ -145,8 +155,8 @@ const addUnit = async (req, res) => {
         // Insert unit
         const insertQuery = `
             INSERT INTO units (
-                society_id, building_id, floor_id, unit_category, unit_number, type, area, occupancy, status, owner_name, owner_number
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                society_id, building_id, floor_id, unit_category, unit_number, type, area, occupancy, status, owner_name, owner_number, owner_number_verified
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const [result] = await db.execute(insertQuery, [
             society_id,
@@ -159,7 +169,8 @@ const addUnit = async (req, res) => {
             occupancy || 'Vacant',
             status || 'active',
             status === 'active' ? (owner_name || null) : null,
-            status === 'active' ? (owner_number || null) : null
+            status === 'active' ? (owner_number || null) : null,
+            status === 'active' ? (owner_number_verified ? 1 : 0) : 0
         ]);
 
         const unitId = result.insertId;
@@ -173,7 +184,7 @@ const addUnit = async (req, res) => {
             'Unit Module',
             'created',
             null,
-            { id: unitId, unit_number, society_id, type, owner_name, owner_number }
+            { id: unitId, unit_number, society_id, type, owner_name, owner_number, owner_number_verified }
         );
 
         return res.status(201).json({
@@ -202,7 +213,8 @@ const updateUnit = async (req, res) => {
             occupancy,
             status,
             owner_name,
-            owner_number
+            owner_number,
+            owner_number_verified
         } = req.body;
 
         if (!society_id || !unit_number || !type) {
@@ -286,7 +298,7 @@ const updateUnit = async (req, res) => {
         // Update
         const updateQuery = `
             UPDATE units SET
-                society_id = ?, building_id = ?, floor_id = ?, unit_category = ?, unit_number = ?, type = ?, area = ?, occupancy = ?, status = ?, owner_name = ?, owner_number = ?
+                society_id = ?, building_id = ?, floor_id = ?, unit_category = ?, unit_number = ?, type = ?, area = ?, occupancy = ?, status = ?, owner_name = ?, owner_number = ?, owner_number_verified = ?
             WHERE id = ?
         `;
         await db.execute(updateQuery, [
@@ -301,6 +313,7 @@ const updateUnit = async (req, res) => {
             status || 'active',
             status === 'active' ? (owner_name || null) : null,
             status === 'active' ? (owner_number || null) : null,
+            status === 'active' ? (owner_number_verified ? 1 : 0) : 0,
             id
         ]);
 
@@ -312,8 +325,8 @@ const updateUnit = async (req, res) => {
             adminDeviceId,
             'Unit Module',
             'updated',
-            { id, unit_number: existingUnit.unit_number, society_id: existingUnit.society_id, owner_name: existingUnit.owner_name, owner_number: existingUnit.owner_number },
-            { id, unit_number, society_id, type, owner_name, owner_number }
+            { id, unit_number: existingUnit.unit_number, society_id: existingUnit.society_id, owner_name: existingUnit.owner_name, owner_number: existingUnit.owner_number, owner_number_verified: existingUnit.owner_number_verified },
+            { id, unit_number, society_id, type, owner_name, owner_number, owner_number_verified }
         );
 
         return res.status(200).json({
@@ -361,10 +374,85 @@ const deleteUnit = async (req, res) => {
     }
 };
 
+// ─── SEND OTP ────────────────────────────────────────────────────────────────
+const sendOtp = async (req, res) => {
+    try {
+        const { owner_number } = req.body;
+        if (!owner_number) {
+            return res.status(400).json({ success: false, message: "Owner mobile number is required" });
+        }
+
+        const otp = generateOtp();
+        const expiresAt = Date.now() + 5 * 60 * 1000; // Expires in 5 minutes
+
+        otpStore.set(owner_number, { otp, expiresAt });
+
+        // Log OTP to server console (per user request)
+        console.log(`\n===========================================`);
+        console.log(`[OTP Verification] Owner Mobile: ${owner_number}`);
+        console.log(`[OTP Verification] OTP Code: ${otp}`);
+        console.log(`===========================================\n`);
+
+        // Write OTP to a temporary file for testing purposes
+        try {
+            const fs = require("fs");
+            const path = require("path");
+            fs.writeFileSync(path.join(__dirname, "../temp_otp.txt"), otp);
+        } catch (fsErr) {
+            console.error("Failed to write temp OTP file:", fsErr);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP sent successfully (check backend console)"
+        });
+    } catch (error) {
+        console.error("Send OTP Error:", error);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+// ─── VERIFY OTP ─────────────────────────────────────────────────────────────
+const verifyOtp = async (req, res) => {
+    try {
+        const { owner_number, otp } = req.body;
+        if (!owner_number || !otp) {
+            return res.status(400).json({ success: false, message: "Owner mobile number and OTP are required" });
+        }
+
+        const record = otpStore.get(owner_number);
+        if (!record) {
+            return res.status(400).json({ success: false, message: "OTP not sent or expired" });
+        }
+
+        if (Date.now() > record.expiresAt) {
+            otpStore.delete(owner_number);
+            return res.status(400).json({ success: false, message: "OTP has expired" });
+        }
+
+        if (record.otp !== otp.toString()) {
+            return res.status(400).json({ success: false, message: "Invalid OTP" });
+        }
+
+        // Verification successful, remove OTP from store
+        otpStore.delete(owner_number);
+
+        return res.status(200).json({
+            success: true,
+            message: "Mobile number verified successfully"
+        });
+    } catch (error) {
+        console.error("Verify OTP Error:", error);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
 module.exports = {
     getUnits,
     getUnitById,
     addUnit,
     updateUnit,
-    deleteUnit
+    deleteUnit,
+    sendOtp,
+    verifyOtp
 };

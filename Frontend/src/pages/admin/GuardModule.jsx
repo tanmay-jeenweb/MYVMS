@@ -8,7 +8,9 @@ import {
     createGuard,
     updateGuard,
     deleteGuard,
-    assignGuardGate
+    assignGuardGate,
+    sendOtp,
+    verifyOtp
 } from "../../api/guardApi";
 import { getGates } from "../../api/gateApi";
 
@@ -31,6 +33,13 @@ export default function GuardModule() {
     const [idProofRef, setIdProofRef] = useState("");
     const [joiningDate, setJoiningDate] = useState("");
     const [status, setStatus] = useState("active");
+
+    // --- Verification States ---
+    const [mobileNumberVerified, setMobileNumberVerified] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [otpInput, setOtpInput] = useState("");
+    const [otpVerifying, setOtpVerifying] = useState(false);
+    const [otpSending, setOtpSending] = useState(false);
 
     // File Upload States
     const [docFile, setDocFile] = useState(null);
@@ -89,8 +98,57 @@ export default function GuardModule() {
         setSelectedGuardForAssign(null);
         setAssignedGateId("");
         setShowAssignModal(false);
+        setMobileNumberVerified(false);
+        setShowOtpModal(false);
+        setOtpInput("");
         setSelectedId(null);
         setFormMode("list");
+    };
+
+    // --- OTP Handlers ---
+    const handleSendOtp = async () => {
+        if (!mobileNumber || mobileNumber.trim() === "") {
+            toast.error("Please enter mobile number first");
+            return;
+        }
+
+        setOtpSending(true);
+        try {
+            const res = await sendOtp(mobileNumber.trim());
+            if (res.data && res.data.success) {
+                toast.success("OTP sent successfully. Check backend console!");
+                setShowOtpModal(true);
+                setOtpInput("");
+            }
+        } catch (error) {
+            console.error("Error sending OTP:", error);
+            toast.error(error.response?.data?.message || "Failed to send OTP");
+        } finally {
+            setOtpSending(false);
+        }
+    };
+
+    const handleVerifyOtp = async (e) => {
+        e.preventDefault();
+        if (!otpInput || otpInput.trim() === "") {
+            toast.error("Please enter the OTP");
+            return;
+        }
+
+        setOtpVerifying(true);
+        try {
+            const res = await verifyOtp(mobileNumber.trim(), otpInput.trim());
+            if (res.data && res.data.success) {
+                toast.success("Mobile number verified successfully!");
+                setMobileNumberVerified(true);
+                setShowOtpModal(false);
+            }
+        } catch (error) {
+            console.error("Error verifying OTP:", error);
+            toast.error(error.response?.data?.message || "Invalid OTP code");
+        } finally {
+            setOtpVerifying(false);
+        }
     };
 
     // Handle File Selection
@@ -125,6 +183,7 @@ export default function GuardModule() {
                 setSelectedId(g.id);
                 setFullName(g.full_name);
                 setMobileNumber(g.mobile_number);
+                setMobileNumberVerified(!!g.mobile_number_verified);
                 setSecurityAgency(g.security_agency);
                 setIdProofRef(g.id_proof_ref);
                 
@@ -184,6 +243,7 @@ export default function GuardModule() {
         const formData = new FormData();
         formData.append("full_name", fullName.trim());
         formData.append("mobile_number", mobileNumber.trim());
+        formData.append("mobile_number_verified", mobileNumberVerified ? "1" : "0");
         formData.append("security_agency", securityAgency.trim());
         formData.append("id_proof_ref", idProofRef.trim());
         formData.append("joining_date", joiningDate);
@@ -445,14 +505,41 @@ export default function GuardModule() {
                                         <label className="block text-[11px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">
                                             Mobile Number <span className="text-rose-600">*</span>
                                         </label>
-                                        <input
-                                            type="text"
-                                            value={mobileNumber}
-                                            onChange={(e) => setMobileNumber(e.target.value)}
-                                            required
-                                            placeholder="e.g. 9876543210"
-                                            className="w-full box-border border border-slate-300 rounded-xl py-2.5 px-3.5 text-sm outline-none text-slate-800 focus:border-indigo-600"
-                                        />
+                                        <div className="flex gap-2">
+                                            <div className="relative flex-1">
+                                                <input
+                                                    type="text"
+                                                    value={mobileNumber}
+                                                    onChange={(e) => {
+                                                        setMobileNumber(e.target.value);
+                                                        setMobileNumberVerified(false);
+                                                    }}
+                                                    required
+                                                    placeholder="e.g. 9876543210"
+                                                    className={`w-full box-border border border-slate-300 rounded-xl py-2.5 px-3.5 text-sm outline-none text-slate-800 focus:border-indigo-600 font-semibold ${
+                                                        mobileNumberVerified ? "pr-24 border-emerald-300 focus:border-emerald-500 bg-emerald-50/10" : ""
+                                                    }`}
+                                                />
+                                                {mobileNumberVerified && (
+                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-emerald-600 font-bold text-xs select-none">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                                                        </svg>
+                                                        Verified
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {mobileNumber && !mobileNumberVerified && (
+                                                <button
+                                                    type="button"
+                                                    onClick={handleSendOtp}
+                                                    disabled={otpSending}
+                                                    className="px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                                                >
+                                                    {otpSending ? "Sending..." : "Verify"}
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div>
@@ -591,7 +678,7 @@ export default function GuardModule() {
                     <div className="w-full flex-1 flex flex-col mb-8">
                         <DataTable
                             tableId="guards_master_list"
-                            title="Guards Master"
+                            title="Guards List"
                             data={guards}
                             columns={columns}
                             loading={loading}
@@ -687,6 +774,64 @@ export default function GuardModule() {
                                 {saving ? "Saving..." : "Save Assignment"}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* OTP Verification Modal */}
+            {showOtpModal && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all p-4">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md border border-slate-100 overflow-hidden transform transition-all duration-300 animate-in fade-in zoom-in-95">
+                        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                            <h3 className="text-base font-extrabold text-slate-800 flex items-center gap-2">
+                                <i className="fa-solid fa-shield-halved text-indigo-600"></i> Enter OTP
+                            </h3>
+                            <button
+                                onClick={() => setShowOtpModal(false)}
+                                className="text-slate-400 hover:text-slate-600 rounded-lg p-1 hover:bg-slate-50 transition-colors border-none bg-transparent cursor-pointer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <form onSubmit={handleVerifyOtp}>
+                            <div className="p-6 space-y-4">
+                                <p className="text-xs text-slate-500 font-medium leading-relaxed font-semibold">
+                                    We have sent a verification code to <span className="font-bold text-slate-800">{mobileNumber}</span>. For development, the OTP has been printed on the backend console.
+                                </p>
+                                <div>
+                                    <label className="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">
+                                        Verification Code
+                                    </label>
+                                    <input
+                                        type="text"
+                                        maxLength="6"
+                                        placeholder="Enter 6-digit OTP"
+                                        value={otpInput}
+                                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ""))}
+                                        required
+                                        autoFocus
+                                        className="w-full box-border border border-slate-300 rounded-xl py-3 px-4 text-lg text-center tracking-[0.5em] outline-none text-slate-800 focus:border-indigo-600 font-bold"
+                                    />
+                                </div>
+                            </div>
+                            <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowOtpModal(false)}
+                                    className="py-2 px-4 rounded-xl border border-slate-300 text-slate-600 bg-white font-semibold text-xs cursor-pointer hover:bg-slate-100 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={otpVerifying}
+                                    className="py-2 px-6 rounded-xl border-none text-white font-bold text-xs bg-indigo-600 cursor-pointer shadow-sm hover:bg-indigo-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    {otpVerifying ? "Verifying..." : "Verify OTP"}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
