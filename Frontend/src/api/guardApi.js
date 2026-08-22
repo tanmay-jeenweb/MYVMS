@@ -27,3 +27,11 @@ export const deleteGuard = async (id) => {
 export const assignGuardGate = async (id, gateId) => {
     return apiClient.put(`/guards/assign/${id}`, { gate_id: gateId });
 };
+
+export const sendOtp = async (mobileNumber) => {
+    return apiClient.post("/guards/send-otp", { mobile_number: mobileNumber });
+};
+
+export const verifyOtp = async (mobileNumber, otp) => {
+    return apiClient.post("/guards/verify-otp", { mobile_number: mobileNumber, otp });
+};

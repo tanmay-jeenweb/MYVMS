@@ -1426,6 +1426,7 @@ export default function ResidentModule() {
                             <DataTable
                                 data={residents}
                                 columns={columns}
+                                title="Residents List"
                                 searchPlaceholder="Search by Owner / Tenant Name or Unit..."
                                 searchKey="unit_number"
                                 actionButton={addBtn}

@@ -4,6 +4,14 @@ const db = require("../config/db.js");
 const { uploadDir, getFileUrl } = require("../config/uploadConfig");
 const { createAuditLog } = require("../models/auditLogModel.js");
 
+// Simple in-memory store for guard OTPs
+// Maps: mobile_number -> { otp, expiresAt }
+const otpStore = new Map();
+
+const generateOtp = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // Generates 6-digit OTP
+};
+
 // Helper to delete a file from the disk
 const deleteDocFile = (filename) => {
     if (!filename) return;
@@ -79,6 +87,7 @@ const addGuard = async (req, res) => {
         const {
             full_name,
             mobile_number,
+            mobile_number_verified,
             security_agency,
             id_proof_ref,
             joining_date,
@@ -98,14 +107,15 @@ const addGuard = async (req, res) => {
 
         const insertQuery = `
             INSERT INTO guards (
-                full_name, mobile_number, security_agency, 
+                full_name, mobile_number, mobile_number_verified, security_agency, 
                 id_proof_ref, id_proof_doc, joining_date, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const [result] = await db.execute(insertQuery, [
             full_name.trim(),
             mobile_number.trim(),
+            mobile_number_verified ? Number(mobile_number_verified) : 0,
             security_agency.trim(),
             id_proof_ref.trim(),
             id_proof_doc,
@@ -128,6 +138,7 @@ const addGuard = async (req, res) => {
                 id: newId,
                 full_name: full_name.trim(),
                 mobile_number: mobile_number.trim(),
+                mobile_number_verified: mobile_number_verified ? Number(mobile_number_verified) : 0,
                 security_agency: security_agency.trim(),
                 id_proof_ref: id_proof_ref.trim(),
                 id_proof_doc,
@@ -155,6 +166,7 @@ const updateGuard = async (req, res) => {
         const {
             full_name,
             mobile_number,
+            mobile_number_verified,
             security_agency,
             id_proof_ref,
             joining_date,
@@ -194,6 +206,7 @@ const updateGuard = async (req, res) => {
             UPDATE guards SET
                 full_name = ?,
                 mobile_number = ?,
+                mobile_number_verified = ?,
                 security_agency = ?,
                 id_proof_ref = ?,
                 id_proof_doc = ?,
@@ -205,6 +218,7 @@ const updateGuard = async (req, res) => {
         await db.execute(updateQuery, [
             full_name.trim(),
             mobile_number.trim(),
+            mobile_number_verified ? Number(mobile_number_verified) : 0,
             security_agency.trim(),
             id_proof_ref.trim(),
             id_proof_doc,
@@ -225,6 +239,7 @@ const updateGuard = async (req, res) => {
                 id: Number(id),
                 full_name: existingGuard.full_name,
                 mobile_number: existingGuard.mobile_number,
+                mobile_number_verified: existingGuard.mobile_number_verified,
                 security_agency: existingGuard.security_agency,
                 id_proof_ref: existingGuard.id_proof_ref,
                 id_proof_doc: existingGuard.id_proof_doc,
@@ -235,6 +250,7 @@ const updateGuard = async (req, res) => {
                 id: Number(id),
                 full_name: full_name.trim(),
                 mobile_number: mobile_number.trim(),
+                mobile_number_verified: mobile_number_verified ? Number(mobile_number_verified) : 0,
                 security_agency: security_agency.trim(),
                 id_proof_ref: id_proof_ref.trim(),
                 id_proof_doc,
@@ -284,6 +300,7 @@ const deleteGuard = async (req, res) => {
                 id: Number(id),
                 full_name: existingGuard.full_name,
                 mobile_number: existingGuard.mobile_number,
+                mobile_number_verified: existingGuard.mobile_number_verified,
                 security_agency: existingGuard.security_agency,
                 id_proof_ref: existingGuard.id_proof_ref,
                 id_proof_doc: existingGuard.id_proof_doc,
@@ -348,11 +365,86 @@ const assignGate = async (req, res) => {
     }
 };
 
+// ─── SEND OTP ────────────────────────────────────────────────────────────────
+const sendOtp = async (req, res) => {
+    try {
+        const { mobile_number } = req.body;
+        if (!mobile_number) {
+            return res.status(400).json({ success: false, message: "Guard mobile number is required" });
+        }
+
+        const otp = generateOtp();
+        const expiresAt = Date.now() + 5 * 60 * 1000; // Expires in 5 minutes
+
+        otpStore.set(mobile_number, { otp, expiresAt });
+
+        // Log OTP to server console (per user request)
+        console.log(`\n===========================================`);
+        console.log(`[OTP Verification] Guard Mobile: ${mobile_number}`);
+        console.log(`[OTP Verification] OTP Code: ${otp}`);
+        console.log(`===========================================\n`);
+
+        // Write OTP to a temporary file for testing purposes
+        try {
+            const fs = require("fs");
+            const path = require("path");
+            fs.writeFileSync(path.join(__dirname, "../temp_otp_guard.txt"), otp);
+        } catch (fsErr) {
+            console.error("Failed to write temp OTP file:", fsErr);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "OTP sent successfully (check backend console)"
+        });
+    } catch (error) {
+        console.error("Send OTP Error:", error);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+// ─── VERIFY OTP ─────────────────────────────────────────────────────────────
+const verifyOtp = async (req, res) => {
+    try {
+        const { mobile_number, otp } = req.body;
+        if (!mobile_number || !otp) {
+            return res.status(400).json({ success: false, message: "Guard mobile number and OTP are required" });
+        }
+
+        const record = otpStore.get(mobile_number);
+        if (!record) {
+            return res.status(400).json({ success: false, message: "OTP not sent or expired" });
+        }
+
+        if (Date.now() > record.expiresAt) {
+            otpStore.delete(mobile_number);
+            return res.status(400).json({ success: false, message: "OTP has expired" });
+        }
+
+        if (record.otp !== otp.toString()) {
+            return res.status(400).json({ success: false, message: "Invalid OTP" });
+        }
+
+        // Verification successful, remove OTP from store
+        otpStore.delete(mobile_number);
+
+        return res.status(200).json({
+            success: true,
+            message: "Mobile number verified successfully"
+        });
+    } catch (error) {
+        console.error("Verify OTP Error:", error);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
 module.exports = {
     getGuards,
     getGuardById,
     addGuard,
     updateGuard,
     deleteGuard,
-    assignGate
+    assignGate,
+    sendOtp,
+    verifyOtp
 };
